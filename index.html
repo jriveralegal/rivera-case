@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rivera v. LCSO — Case Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nv:#0a1628;--gd:#c9a84c;--cr:#8b0000;--ow:#f9f7f2;--lg:#e2e0d8;--mg:#666;
+  --grn:#004d1a;--red:#8b0000;--amb:#7a3a00;
+  --font-base:15px; /* LARGER BASE FONT */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:var(--font-base)}
+body{font-family:'Crimson Pro',Georgia,serif;background:var(--ow);color:#1a1a1a;min-height:100vh}
+
+/* ── TOP HEADER ── */
+.hdr{background:var(--nv);border-bottom:3px solid var(--gd);position:sticky;top:0;z-index:400;box-shadow:0 4px 24px rgba(0,0,0,.6)}
+.hdr-inner{max-width:1600px;margin:auto;padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.htitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:white;line-height:1.1;flex-shrink:0}
+.htitle em{color:var(--gd);font-style:normal}
+.hsub{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:1px}
+.clk{border-radius:6px;padding:5px 10px;text-align:center;flex-shrink:0;min-width:130px}
+.clk.sol{background:linear-gradient(135deg,#001a4d,#003080)}
+.clk.purge{background:linear-gradient(135deg,#4d0000,#8b0000);border:1px solid rgba(255,100,100,.4)}
+.clk.kw{background:linear-gradient(135deg,#3a2000,#6a3800);border:1px solid rgba(201,168,76,.3)}
+.clk.portal{background:linear-gradient(135deg,#001a3d,#003060)}
+.clk-lbl{font-family:'DM Mono',monospace;font-size:7px;color:rgba(255,255,255,.5);letter-spacing:.8px;text-transform:uppercase}
+.clk-val{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;margin:1px 0}
+.clk.sol .clk-val{color:#7ec8ff}
+.clk.purge .clk-val{color:#ffaaaa}
+.clk.kw .clk-val{color:var(--gd)}
+.clk.portal .clk-val{color:#aac8ff}
+.gdrive{margin-left:auto;background:var(--gd);color:var(--nv);border:none;border-radius:5px;padding:7px 14px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;cursor:pointer;text-decoration:none;flex-shrink:0}
+
+/* ── FLASH ANIMATIONS ── */
+@keyframes flash-red{0%,100%{opacity:1;color:#ff5555}50%{opacity:.3}}
+@keyframes flash-fast{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes flash-multi{0%{color:#ff4444}25%{color:#ff8800}50%{color:#ffff00}75%{color:#ff00ff}100%{color:#ff4444}}
+@keyframes flash-amber{0%,100%{opacity:1;color:#ffaa00}50%{opacity:.5}}
+@keyframes pulse-slow{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes border-alarm{0%,100%{box-shadow:0 0 0 2px rgba(255,0,0,.6)}50%{box-shadow:0 0 0 4px rgba(255,0,0,.2)}}
+.pd{animation:flash-red .9s infinite}
+.near-cls{animation:flash-amber 1.5s infinite}
+
+/* ── ALERT BARS ── */
+.alert{background:#5a0000;color:white;padding:8px 20px;font-family:'DM Mono',monospace;font-size:10px;border-bottom:2px solid #ff3333;text-align:center;animation:pulse-slow 2s infinite}
+.vfix{background:#0a2200;color:#90ff90;padding:6px 20px;font-family:'DM Mono',monospace;font-size:10px;border-bottom:1px solid #2a6600;text-align:center}
+.sendbanner{background:#7a2800;color:white;padding:6px 20px;font-family:'DM Mono',monospace;font-size:10px;text-align:center;border-bottom:1px solid #c94c00}
+
+/* ── NAV TABS ── */
+.nav{background:white;border-bottom:2px solid var(--lg);position:sticky;top:57px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.nav-inner{max-width:1600px;margin:auto;display:flex;overflow-x:auto;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nt{padding:12px 18px;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--mg);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;letter-spacing:.3px}
+.nt:hover{color:var(--nv);background:#f8f7f2}
+.nt.on{color:var(--nv);border-bottom-color:var(--gd);font-weight:700}
+.nt.urgent-tab{color:#c94c00}
+.nt.urgent-tab.on{color:#8b0000;border-bottom-color:#8b0000}
+
+/* ── PAGES ── */
+.page{display:none;max-width:1600px;margin:0 auto;padding:16px}
+.page.on{display:block}
+
+/* ── DEADLINE DASHBOARD (on overview page) ── */
+.ddash-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.5px;color:var(--mg);text-transform:uppercase;margin-bottom:10px}
+.dd-grid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.ddc{border-radius:8px;padding:11px 14px;min-width:150px;flex:1;max-width:210px}
+.ddc.critical{background:#fff0f0;border:2px solid #8b0000}
+.ddc.urgent{background:#fff5ee;border:1.5px solid #c94c00}
+.ddc.warning{background:#fffaf0;border:1.5px solid var(--gd)}
+.ddc.ok{background:#f0fff4;border:1px solid #005a20}
+.ddc.alarm{background:#1a0000;border:2px solid #ff0000;animation:border-alarm 1s infinite}
+.ddc.alarm .dd-ddate{animation:flash-multi .5s infinite}
+.ddc.superurg{background:#2a0000;border:2px solid #ff3300;animation:border-alarm 1.5s infinite}
+.ddc.superurg .dd-ddate{animation:flash-fast .4s infinite;color:#ff6666}
+.ddc.overdue{background:#fff0f0;border:2px solid #cc0000}
+.ddc.overdue .dd-ddate{animation:flash-red .8s infinite}
+.dd-dlbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.5px;color:var(--mg);text-transform:uppercase}
+.ddc.alarm .dd-dlbl,.ddc.superurg .dd-dlbl{color:rgba(255,180,180,.6)}
+.dd-ddate{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;margin:3px 0}
+.ddc.critical .dd-ddate{color:#8b0000}
+.ddc.urgent .dd-ddate{color:#c94c00}
+.dd-dtimer{font-family:'DM Mono',monospace;font-size:9px;margin-top:2px}
+.ddc.alarm .dd-dtimer{animation:flash-multi .5s infinite}
+.dd-dnote{font-size:10px;color:var(--mg);margin-top:3px;font-family:'DM Mono',monospace;line-height:1.5}
+.ddc.alarm .dd-dnote,.ddc.superurg .dd-dnote{color:rgba(255,180,180,.7)}
+
+/* ── CALENDAR ── */
+.cal-wrap{background:white;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px;margin-bottom:20px;border-top:3px solid var(--gd)}
+.cal-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.cal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--nv)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-hdr{font-family:'DM Mono',monospace;font-size:9px;text-align:center;color:var(--mg);padding:4px;letter-spacing:.5px}
+.cal-day{min-height:52px;border-radius:6px;padding:4px 6px;border:1px solid var(--lg);background:#faf9f6;position:relative;cursor:default}
+.cal-day.today{border:2px solid var(--gd);background:#fffdf5}
+.cal-day.has-event{background:#fff5f0;border-color:#c94c00}
+.cal-day.has-urgent{background:#fff0f0;border-color:#8b0000;animation:border-alarm 2s infinite}
+.cal-day.other-month{opacity:.35}
+.cal-dn{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:var(--nv)}
+.cal-day.today .cal-dn{color:var(--gd)}
+.cal-ev{font-size:8px;font-family:'DM Mono',monospace;margin-top:2px;line-height:1.4;color:#8b0000;font-weight:600}
+
+/* ── SECTION CARDS (overview) ── */
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.sec-card{background:white;border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;border-left:4px solid var(--lg);transition:.2s;text-decoration:none;display:block}
+.sec-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.sc-icon{font-size:24px;margin-bottom:8px}
+.sc-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--nv);margin-bottom:4px}
+.sc-desc{font-family:'DM Mono',monospace;font-size:9px;color:var(--mg);line-height:1.5}
+.sc-count{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:var(--gd);margin-top:6px}
+.sec-card.c-red{border-left-color:#8b0000}
+.sec-card.c-gold{border-left-color:var(--gd)}
+.sec-card.c-grn{border-left-color:#005a20}
+.sec-card.c-blu{border-left-color:#003070}
+.sec-card.c-pur{border-left-color:#3d0070}
+.sec-card.c-amb{border-left-color:#7a4000}
+
+/* ── DOCUMENT TABLE (used on multiple pages) ── */
+.pg-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--nv);border-bottom:2px solid var(--gd);padding-bottom:8px;margin-bottom:16px}
+.pg-subtitle{font-family:'DM Mono',monospace;font-size:10px;color:var(--mg);margin-top:-10px;margin-bottom:16px;letter-spacing:.3px}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.srch{flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--lg);border-radius:6px;font-family:'DM Mono',monospace;font-size:12px;background:var(--ow)}
+.fb{padding:7px 12px;border:1.5px solid var(--lg);background:white;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;color:var(--nv);transition:.15s}
+.fb:hover,.fb.on{background:var(--nv);color:white;border-color:var(--nv)}
+.fb.red{border-color:#c94c00;color:#c94c00}
+.fb.red:hover,.fb.red.on{background:#c94c00;color:white}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);margin-top:10px}
+thead tr{background:var(--nv)}
+th{padding:11px 12px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.5px;text-transform:uppercase;text-align:left;color:rgba(255,255,255,.85);font-weight:500}
+td{padding:10px 12px;font-size:13px;vertical-align:top;border-bottom:1px solid var(--lg)}
+.dr:hover td{background:#f8f7f2}
+.dr.hidden{display:none}
+.dr.alarm-row td{border-left:4px solid #ff0000;background:#150000}
+.dr.alarm-row td{color:#ffcccc}
+.dr.surg-row td{border-left:4px solid #8b0000}
+.dr.send-row td{border-left:4px solid #c94c00}
+.dr.sent-row td{border-left:4px solid #005a20;opacity:.85}
+.dr.ev-row td{border-left:4px solid #6600cc}
+
+/* cell styles — LARGER */
+.cgrp{font-family:'DM Mono',monospace;font-size:9px;color:var(--mg);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.cid{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--nv)}
+.dr.alarm-row .cid{color:#ff9999}
+.dtitle{font-weight:700;font-size:14px;margin-bottom:4px;line-height:1.3}
+.dr.alarm-row .dtitle{color:#ffcccc;animation:flash-multi .6s infinite}
+.ddesc{font-size:11px;color:#444;line-height:1.6;margin-bottom:4px;font-family:'DM Mono',monospace}
+.dreply{font-family:'DM Mono',monospace;font-size:10px;color:#005a20;background:#f0fff4;padding:3px 8px;border-radius:4px;margin-top:3px;display:inline-block;border:1px solid #99ddaa}
+.badge{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;padding:3px 7px;border-radius:3px;margin:1px 2px 1px 0}
+.em{background:#003070;color:white}.cm{background:#001a6e;color:white}.ip{background:#3a2000;color:white}.po{background:#333;color:white}.pr{background:#2d0060;color:white}
+.dc{text-align:center;min-width:100px}
+.ds{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;margin-bottom:2px}
+.dl{font-family:'DM Mono',monospace;color:var(--mg);font-size:8px;text-transform:uppercase;letter-spacing:.3px}
+.dv{font-family:'DM Mono',monospace;font-weight:700;font-size:10px;margin:2px 0}
+.dtmr{font-family:'DM Mono',monospace;font-size:9px;margin-top:4px;padding:3px 7px;border-radius:4px;display:inline-block}
+.dtmr.ok{background:#e8fff0;color:#005a20}
+.dtmr.near{background:#fff8e0;color:#7a4000;animation:flash-amber 1.5s infinite}
+.dtmr.over1{background:#3a0000;color:#ffaaaa;animation:flash-red .8s infinite}
+.dtmr.over3{background:#1a0000;color:#ff6666;animation:flash-fast .4s infinite;font-weight:700}
+.dtmr.over7{background:#0a0000;color:#ff4444;animation:flash-multi .5s infinite;font-weight:700}
+.pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.p-now{background:#c94c00;color:white;animation:flash-amber 2s infinite}
+.p-urg{background:#8b0000;color:white;animation:flash-red 1.5s infinite}
+.p-alarm{background:#ff0000;color:white;animation:flash-multi .5s infinite}
+.p-sent{background:#005a20;color:white}
+.p-ev{background:#2d0060;color:white}
+.p-pend{background:#555;color:white}
+
+/* ACTION BUTTONS — every row gets both */
+.acts{display:flex;flex-direction:column;gap:4px;min-width:120px}
+.ab{display:block;padding:6px 8px;border-radius:5px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;cursor:pointer;text-align:center;border:none;text-decoration:none;letter-spacing:.2px;transition:.15s}
+.ab:hover{filter:brightness(1.15)}
+.ab.gm{background:#d93025;color:white}
+.ab.prnt{background:#1a1a1a;color:white}
+.ab.ms{background:#005a20;color:white}
+.ab.sl{background:#e0ddd8;color:#888;font-size:8px}
+
+/* ── EVIDENCE PAGE ── */
+.ev-card{background:white;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:16px;overflow:hidden}
+.ev-hdr{padding:14px 18px;border-left:5px solid #6600cc;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ev-hdr.safe{border-left-color:#005a20;background:#f8fff8}
+.ev-hdr.deleted{border-left-color:#8b0000;background:#fff8f8}
+.ev-hdr.urgent{border-left-color:#c94c00;background:#fff8f0}
+.ev-hdr.secure{border-left-color:#003070;background:#f8f8ff}
+.ev-hdr.pending{border-left-color:#7a4000;background:#fffaf0}
+.ev-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--nv);margin-bottom:4px}
+.ev-id{font-family:'DM Mono',monospace;font-size:10px;color:var(--mg);margin-bottom:6px}
+.ev-body{padding:14px 18px;border-top:1px solid var(--lg)}
+.ev-detail{font-size:13px;line-height:1.8;color:#333;margin-bottom:8px}
+.ev-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.ev-tag{font-family:'DM Mono',monospace;font-size:9px;padding:3px 9px;border-radius:10px;background:var(--lg);color:var(--nv)}
+.ev-status{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;padding:4px 12px;border-radius:10px}
+.ev-status.safe{background:#005a20;color:white}
+.ev-status.gone{background:#8b0000;color:white;animation:flash-red 1s infinite}
+.ev-status.urgent{background:#c94c00;color:white;animation:flash-amber 1.5s infinite}
+.ev-status.secure{background:#003070;color:white}
+.ev-status.pending{background:#7a4000;color:white}
+
+/* ── SEND GUIDE ── */
+.sg-step{border-radius:8px;padding:14px 18px;margin-bottom:10px;border-left:4px solid #ccc}
+.sg-step.s-urg{border-left-color:#8b0000;background:#fff8f8}
+.sg-step.s-em{border-left-color:#003070;background:#f8f8ff}
+.sg-step.s-ml{border-left-color:#005a20;background:#f8fff8}
+.sg-step.s-ip{border-left-color:#7a4400;background:#fffaf0}
+.sg-stitle{font-weight:700;font-size:15px;margin-bottom:6px;font-family:'Playfair Display',serif}
+.sg-body{font-size:12px;line-height:1.8;color:#333;font-family:'DM Mono',monospace}
+code{background:#e8e6e0;padding:2px 6px;border-radius:3px;font-family:'DM Mono',monospace;font-size:11px}
+
+/* ── CARL MILLER ── */
+.cm-tribute{background:linear-gradient(135deg,#080808,#111,#0a0808);border-top:3px solid var(--gd);border-bottom:3px solid var(--gd);padding:32px 20px;text-align:center;margin-top:20px}
+.cm-inner{display:inline-block;border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:28px 44px;max-width:750px}
+.cm-stars{font-size:16px;letter-spacing:8px;color:var(--gd);margin-bottom:14px;opacity:.7}
+.cm-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:white;letter-spacing:1px;margin-bottom:4px}
+.cm-dates{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.cm-quote{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gd);line-height:1.7;margin-bottom:16px}
+.cm-bio{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.45);line-height:1.9;max-width:560px;margin:0 auto 16px}
+.cm-tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cm-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.5px;color:rgba(201,168,76,.6);border:1px solid rgba(201,168,76,.2);padding:4px 12px;border-radius:12px;text-transform:uppercase}
+
+/* ── PANELS ── */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:800px){.panels{grid-template-columns:1fr}}
+.panel{background:white;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:20px}
+.panel.gh{background:#0d1117;color:#e6edf3;border-top:3px solid #58a6ff}
+.panel.gs{border-top:3px solid #0F9D58}
+.ph{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;margin-bottom:14px;letter-spacing:.3px}
+.panel.gh .ph{color:#58a6ff}
+.panel.gs .ph{color:#0F9D58}
+.pstep{font-size:12px;line-height:1.9;margin-bottom:6px;font-family:'DM Mono',monospace}
+.panel.gh .pstep{color:#c9d1d9}
+.pcode{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:10px;color:#a5d6ff;margin:5px 0;word-break:break-all}
+
+/* ── FOOTER ── */
+.foot{background:var(--nv);border-top:2px solid rgba(201,168,76,.2);padding:16px 20px;text-align:center;margin-top:20px}
+.foot-txt{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.5px}
+
+@media(max-width:600px){
+  .htitle{font-size:16px}
+  .clk{min-width:100px}
+  td{font-size:12px;padding:8px}
+  .dtitle{font-size:13px}
+}
+@media print{
+  .hdr,.nav,.ctrl,.acts,.cm-tribute,.panels,.foot,.alert,.vfix,.sendbanner,.dd-grid,.cal-wrap,.sec-grid{display:none!important}
+  .page{display:block!important}
+  td,th{font-size:10px;padding:5px}
+}
+
+/* ── DROPDOWN NAV ────────────────────────────────────────────── */
+.nav-item { position: relative; display: inline-block; }
+.nav-dropdown:hover .nav-drop-menu,
+.nav-dropdown:focus-within .nav-drop-menu { display: block; }
+.nav-drop-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 280px;
+  background: white;
+  border: 2px solid #0a1628;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  z-index: 9999;
+  padding: 6px 0 10px;
+}
+.ndm-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px 16px 4px;
+}
+.ndm-link {
+  display: block;
+  padding: 8px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #0a1628;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .1s;
+  border-left: 3px solid transparent;
+}
+.ndm-link:hover {
+  background: #f0f4ff;
+  border-left-color: #0a1628;
+  color: #0a1628;
+}
+.ndm-divider {
+  height: 1px;
+  background: #eee;
+  margin: 6px 12px;
+}
+.ndm-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: #666;
+  padding: 3px 16px;
+  line-height: 1.6;
+}
+
+/* Mobile: stack nav items */
+@media (max-width: 640px) {
+  .nav-inner { flex-wrap: wrap; gap: 4px; }
+  .nav-drop-menu { min-width: 220px; font-size: 10px; }
+  .ndm-link { font-size: 10px; padding: 7px 12px; }
+}
+</style>
+  <!-- Google Save to Drive API -->
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <style>
+    .g-savetodrive { display: inline-block; vertical-align: middle; }
+    .drive-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #1a73e8; color: white; padding: 7px 12px;
+      border-radius: 5px; font-family: 'DM Mono', monospace;
+      font-size: 9px; font-weight: 700; text-decoration: none;
+      border: none; cursor: pointer; white-space: nowrap;
+    }
+    .drive-btn:hover { background: #1557b0; }
+    .drive-btn img { width: 14px; height: 14px; vertical-align: middle; }
+  
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.75; transform:scale(1.04); }
+}
+.howto-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9000;align-items:center;justify-content:center; }
+.howto-overlay.open { display:flex; }
+.howto-box { background:#fff;border-radius:12px;padding:32px;max-width:680px;width:92%;max-height:86vh;overflow-y:auto;position:relative;font-family:'DM Mono',monospace;box-shadow:0 8px 40px rgba(0,0,0,.4); }
+.howto-box h2 { font-family:'Playfair Display',serif;color:#0a1628;margin:0 0 16px;font-size:22px; }
+.howto-box .step { background:#f4f7ff;border-left:4px solid #003070;border-radius:6px;padding:10px 14px;margin-bottom:10px;font-size:11px;line-height:1.7;color:#222; }
+.howto-box .step strong { color:#003070;display:block;font-size:12px;margin-bottom:3px; }
+.howto-close { position:absolute;top:14px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:#666; }
+</style>
+</head>
+<body>
+<!-- HOW-TO POPUP -->
+<div class="howto-overlay" id="howto-overlay" onclick="if(event.target===this)closeHowTo()">
+  <div class="howto-box">
+    <button class="howto-close" onclick="closeHowTo()" title="Close">✕</button>
+    <h2>📖 How To Use This Portal</h2>
+    <div class="step"><strong>🏠 HOME TAB</strong>Countdown timers, key deadlines, and case overview. Check this first every time you open the portal.</div>
+    <div class="step"><strong>📋 ACTION PLAN TAB</strong>Your step-by-step send guide. 🚨 CRITICAL steps must go out first. Use the 📧 Gmail button to open a pre-filled email — just paste your attachments and hit send.</div>
+    <div class="step"><strong>📁 ALL DOCUMENTS TAB</strong>Every file linked to Google Drive. Click any document to open it. Use the download icon to save locally. Organized by category.</div>
+    <div class="step"><strong>🎥 EVIDENCE TAB</strong>Hannah's witness videos play directly here. Body cam deadline tracker. All physical evidence documented.</div>
+    <div class="step"><strong>⚖️ CARL MILLER TAB</strong>Your legal strategy hub. Case law, QI arguments, Monell analysis, fee-shifting rules, pro se filing guides, and court instructions — all in one place.</div>
+    <div class="step"><strong>📤 SEND CENTER TAB</strong>Pre-built email templates ready to fire. Each email opens Gmail pre-filled with subject + recipients. Attach your PDFs from Drive before sending.</div>
+    <div class="step"><strong>🔍 SEARCH BAR (top right)</strong>Type any word to search across all documents and steps. Works on the All Documents and Action Plan tabs.</div>
+    <div class="step"><strong>🔗 DRIVE FOLDER</strong>The 📁 Drive button (top nav) opens your full Google Drive case folder. All your PDFs live there. Share Drive links — not downloads — in your emails.</div>
+    <div class="step"><strong>⚠️ MOST IMPORTANT RIGHT NOW</strong>LR-4 Body Cam Fee Waiver (Step 10) + Apple Follow-Up (Step 16) are your most time-sensitive items. Send those today. April 28 body cam purge = 53 days.</div>
+    <p style="font-size:10px;color:#888;margin-top:16px;line-height:1.6">This portal is private — only you can access it. If you share the GitHub link with an attorney, they can view everything from any device. Bookmark this page so you can always find it.</p>
+  </div>
+</div>
+<script>
+function openHowTo() { document.getElementById('howto-overlay').classList.add('open'); }
+function closeHowTo() { document.getElementById('howto-overlay').classList.remove('open'); }
+</script>
+
+
+
+<!-- STICKY HEADER -->
+<div class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <div class="htitle">Rivera v. <em>LCSO</em></div>
+      <div class="hsub">Official Case Portal · Updated March 4, 2026</div>
+    </div>
+    <div class="clk sol"><div class="clk-lbl">SOL · Jan 28 2028</div><div class="clk-val" id="sol">…</div></div>
+    <div class="clk purge"><div class="clk-lbl">🚨 Body Cam Purge</div><div class="clk-val" id="purge">…</div></div>
+    <div class="clk kw"><div class="clk-lbl">Keywords · Mar 18</div><div class="clk-val" id="kw">…</div></div>
+    <div class="clk portal"><div class="clk-lbl">Portal · Mar 14</div><div class="clk-val" id="portal">…</div></div>
+    <a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" target="_blank" class="gdrive">📁 Drive</a>
+    <button onclick="openHowTo()" style="background:#f0c040;color:#0a1628;border:none;border-radius:6px;padding:7px 14px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;margin-left:6px">📖 How To Use</button>
+  </div>
+</div>
+
+<div class="alert">🚨 4 COURT FILINGS READY — EMERGENCY MOTIONS + PRE-SUIT PETITIONS — FILE AT LEE COUNTY COURTHOUSE IMMEDIATELY</div>
+<div class="vfix">✅ VIDEO CORRECTION: LCSO deleted Rivera's phone recording. Hannah's 2 videos on Hannah's phone are SAFE. BP/Circle K/Walgreens: delivered in person Feb 25-26 + mailed Feb 26. Videos recorded. Larry's Pawn + Publix removed.</div>
+<div class="sendbanner">📋 6 LCSO LETTERS READY · LR-1 through LR-6 · FDLE Combined Monell Ready · Fee Challenge NOT YET SENT — See Send Guide</div>
+
+<!-- NAV TABS -->
+<div class="nav" id="main-nav">
+  <div class="nav-inner">
+
+    <!-- HOME -->
+    <div class="nav-item">
+      <button class="nt on" onclick="showPage('overview',this)" id="nav-overview">🏠 Home</button>
+    </div>
+
+    <!-- ACTION PLAN DROPDOWN -->
+    <div class="nav-item nav-dropdown">
+      <button class="nt urgent-tab" onclick="showPage('send',this)" id="nav-send">📋 Action Plan ▾</button>
+      <div class="nav-drop-menu">
+        <div class="ndm-title">📋 Action Plan</div>
+        <a class="ndm-link" onclick="showPage('send',document.getElementById('nav-send'));setTimeout(()=>filtSCTab('unsent',document.getElementById('sf-unsent')),100)">🔴 Still Need to Send (8 items)</a>
+        <a class="ndm-link" onclick="showPage('send',document.getElementById('nav-send'));setTimeout(()=>filtSCTab('sent',document.getElementById('sf-sent')),100)">✅ Already Sent (12 confirmed)</a>
+        <a class="ndm-link" onclick="showPage('send',document.getElementById('nav-send'));setTimeout(()=>filtSCTab('email',null),100)">📧 Email Actions Only</a>
+        <a class="ndm-link" onclick="showPage('send',document.getElementById('nav-send'));setTimeout(()=>filtSCTab('cert',null),100)">📬 Certified Mail Only</a>
+        <div class="ndm-divider"></div>
+        <div class="ndm-note">💡 Each step has a Gmail button — one click opens a pre-filled email ready to send</div>
+      </div>
+    </div>
+
+    <!-- ALL FILES DROPDOWN -->
+    <div class="nav-item nav-dropdown">
+      <button class="nt" onclick="showPage('allfiles',this)" id="nav-allfiles">📂 All Files ▾</button>
+      <div class="nav-drop-menu">
+        <div class="ndm-title">📂 All Files</div>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'))">⭐ Quick Downloads (top 6 files)</a>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'));setTimeout(()=>{showAFTab('pdfs',document.getElementById('af-tab-pdfs'));filtPdfs('atty',null)},100)">⭐ Attorney Packets</a>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'));setTimeout(()=>{showAFTab('pdfs',document.getElementById('af-tab-pdfs'));filtPdfs('unsent',null)},100)">🔴 PDFs to Send Now</a>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'));setTimeout(()=>showAFTab('pdfs',document.getElementById('af-tab-pdfs')),100)">📋 All PDFs</a>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'));setTimeout(()=>showAFTab('docs',document.getElementById('af-tab-docs')),100)">📄 All Letters &amp; Submissions</a>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'));setTimeout(()=>{showAFTab('pdfs',document.getElementById('af-tab-pdfs'));filtPdfs('monell',null)},100)">🏛️ Monell Letters</a>
+        <a class="ndm-link" onclick="showPage('allfiles',document.getElementById('nav-allfiles'));setTimeout(()=>{showAFTab('pdfs',document.getElementById('af-tab-pdfs'));filtPdfs('lcso',null)},100)">🚔 LCSO Documents</a>
+        <div class="ndm-divider"></div>
+        <a class="ndm-link" href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" download style="color:#005a20;font-weight:700">📦 Download All (ZIP)</a>
+      </div>
+    </div>
+
+    <!-- EVIDENCE DROPDOWN -->
+    <div class="nav-item nav-dropdown">
+      <button class="nt" onclick="showPage('evidence',this)" id="nav-evidence">🔒 Evidence ▾</button>
+      <div class="nav-drop-menu">
+        <div class="ndm-title">🔒 Evidence &amp; Videos</div>
+        <a class="ndm-link" onclick="showPage('evidence',document.getElementById('nav-evidence'))">📋 All Evidence Items (13 total)</a>
+        <a class="ndm-link" onclick="showPage('evidence',document.getElementById('nav-evidence'));setTimeout(()=>window.scrollTo(0,document.getElementById('ev-cards').offsetTop),200)">🎥 Hannah's 2 Videos</a>
+        <a class="ndm-link" onclick="showPage('evidence',document.getElementById('nav-evidence'));setTimeout(()=>window.scrollTo(0,document.querySelector('#page-evidence .evidence-videos').offsetTop),200)">📷 Vehicle Damage Photos</a>
+        <div class="ndm-divider"></div>
+        <div class="ndm-note">🚨 Body cam footage purges April 28, 2026 — <strong>54 days</strong></div>
+        <div class="ndm-note">📹 Rivera's phone recording was deleted by LCSO — First Amendment violation</div>
+      </div>
+    </div>
+
+    <!-- ATTORNEY PAGE -->
+    <div class="nav-item nav-dropdown">
+      <button class="nt" onclick="showPage('attorney',this)" id="nav-attorney" style="background:#8b0000;color:white;font-weight:700">👔 For Attorneys ▾</button>
+      <div class="nav-drop-menu" style="right:0;left:auto">
+        <div class="ndm-title">👔 Attorney Briefing Page</div>
+        <a class="ndm-link" onclick="showPage('attorney',document.getElementById('nav-attorney'))" style="font-weight:700;color:#8b0000">📌 Everything at a Glance</a>
+        <a class="ndm-link" onclick="showPage('attorney',document.getElementById('nav-attorney'));setTimeout(()=>document.getElementById('atty-claims').scrollIntoView({behavior:'smooth'}),200)">⚖️ All Claims — Bullet Form</a>
+        <a class="ndm-link" onclick="showPage('attorney',document.getElementById('nav-attorney'));setTimeout(()=>document.getElementById('atty-evidence').scrollIntoView({behavior:'smooth'}),200)">🔒 Evidence Inventory</a>
+        <a class="ndm-link" onclick="showPage('attorney',document.getElementById('nav-attorney'));setTimeout(()=>document.getElementById('atty-timeline').scrollIntoView({behavior:'smooth'}),200)">📅 Key Dates Timeline</a>
+        <a class="ndm-link" onclick="showPage('attorney',document.getElementById('nav-attorney'));setTimeout(()=>document.getElementById('atty-fees').scrollIntoView({behavior:'smooth'}),200)" style="color:#005a20;font-weight:700">💰 §1988 — LCSO Pays Your Fees</a>
+        <a class="ndm-link" onclick="showPage('attorney',document.getElementById('nav-attorney'));setTimeout(()=>document.getElementById('atty-packet').scrollIntoView({behavior:'smooth'}),200)">📦 Download Full Packet</a>
+        <div class="ndm-divider"></div>
+        <div class="ndm-note">🚨 Body cam purge: <strong>April 28, 2026</strong> — 54 days. Emergency motion needed.</div>
+      </div>
+    </div>
+
+    <!-- CARL MILLER DROPDOWN -->
+    <div class="nav-item nav-dropdown">
+      <button class="nt" onclick="showPage('carlmiller',this)" id="nav-carlmiller" style="color:#C9A84C;font-weight:700">★ Carl Miller ▾</button>
+      <div class="nav-drop-menu" style="right:0;left:auto">
+        <div class="ndm-title">★ Carl Miller — 1938–2014</div>
+        <a class="ndm-link" onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'))">👤 About Carl Miller</a>
+        <a class="ndm-link" onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'));setTimeout(()=>showCMTab2(0),100)">📋 Pro Se Court Filing Guide</a>
+        <a class="ndm-link" onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'));setTimeout(()=>showCMTab2(1),100)">📚 Case Law Library (10 categories)</a>
+        <a class="ndm-link" onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'));setTimeout(()=>showCMTab2(2),100)">📅 Rules &amp; Deadlines</a>
+        <a class="ndm-link" onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'));setTimeout(()=>showCMTab2(3),100)">⚠️ 16-Error Report</a>
+        <a class="ndm-link" onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'));setTimeout(()=>showCMTab2(4),100)">📬 Delivery Methods</a>
+        <div class="ndm-divider"></div>
+        <div class="ndm-note" style="font-style:italic;color:#c9a84c">"Learn it. Use it. It belongs to you."</div>
+      </div>
+    </div>
+
+    <!-- LEGAL REFERENCE DROPDOWN -->
+    <div class="nav-item nav-dropdown">
+      <button class="nt" onclick="showPage('caselaw',this)" id="nav-caselaw">⚖️ Legal Ref ▾</button>
+      <div class="nav-drop-menu" style="right:0;left:auto">
+        <div class="ndm-title">⚖️ Legal Reference</div>
+        <a class="ndm-link" onclick="showPage('caselaw',document.getElementById('nav-caselaw'));setTimeout(()=>showCMTab(0),100)">📋 Pro Se Court Filing Guide</a>
+        <a class="ndm-link" onclick="showPage('caselaw',document.getElementById('nav-caselaw'));setTimeout(()=>showCMTab(1),100)">📚 Case Law Library (10 categories)</a>
+        <a class="ndm-link" onclick="showPage('caselaw',document.getElementById('nav-caselaw'));setTimeout(()=>showCMTab(2),100)">📅 Rules &amp; Deadlines</a>
+        <a class="ndm-link" onclick="showPage('caselaw',document.getElementById('nav-caselaw'));setTimeout(()=>showCMTab(3),100)">⚠️ 16-Error Report</a>
+        <a class="ndm-link" onclick="showPage('caselaw',document.getElementById('nav-caselaw'));setTimeout(()=>showCMTab(4),100)">📬 Delivery Methods</a>
+        <div class="ndm-divider"></div>
+        <div class="ndm-note">Click "Read Full Opinion" on any case law to expand the full judge's language</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page on" id="page-overview">
+
+  <!-- START HERE BANNER -->
+  <div style="background:linear-gradient(135deg,#0a1628,#1a3a6a);border-radius:12px;padding:20px 22px;margin-bottom:18px;border:2px solid #c9a84c">
+    <div style="font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:#c9a84c;margin-bottom:8px">👋 Welcome — Rivera v. LCSO Case Portal</div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.9);line-height:2">
+      This site has everything for your civil rights case against LCSO.<br>
+      You don't need to be tech-savvy — every button tells you exactly what it does.<br>
+      <strong style="color:#c9a84c">Share this link with any attorney:</strong>
+      <a href="https://jriveralegal.github.io/rivera-case/" target="_blank" style="color:#66aaff">https://jriveralegal.github.io/rivera-case/</a>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <span style="background:rgba(255,255,255,.12);border-radius:6px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:10px;color:white">💡 📧 Gmail = opens email pre-filled, just hit Send</span>
+      <span style="background:rgba(255,255,255,.12);border-radius:6px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:10px;color:white">💡 💾 Drive = downloads file + opens Google Drive</span>
+      <span style="background:rgba(255,255,255,.12);border-radius:6px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:10px;color:white">💡 Red flashing timer = needs attention NOW</span>
+    </div>
+  </div>
+
+  <!-- URGENT BANNER -->
+  <div style="background:#3a0000;border-radius:10px;padding:14px 18px;margin-bottom:18px;border-left:5px solid #ff4444">
+    <div style="font-family:'Playfair Display',serif;font-size:16px;color:#ff9999;font-weight:700;margin-bottom:6px">🔴 Still Needs to Be Sent — Do These Today</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.85);line-height:2">
+      <strong style="color:#ff4444">🏛️ FILE AT COURTHOUSE:</strong> Emergency Motion (Jan 28 Body Cams + §320.07) · Emergency Motion (Feb 8-9 Phone + Bell Tower) · Pre-Suit Petition (8 Businesses) · Pre-Suit Petition (Apple iCloud)<br>
+      <strong style="color:#ffaa00">📧 EMAIL TODAY:</strong> FDLE Combined + Monell &nbsp;·&nbsp; ACLU Florida + videos &nbsp;·&nbsp; DOJ Monell supplement &nbsp;·&nbsp; FL AG Monell &nbsp;·&nbsp; US Attorney Monell &nbsp;·&nbsp; Apple follow-up &nbsp;·&nbsp; Attorney outreach<br>
+      <strong style="color:#ffaa00">📬 CERTIFIED MAIL:</strong> §768.28 Presuit Notice · LR-1 through LR-6 · Fee Challenge
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap">
+      <button onclick="showPage('send',document.querySelectorAll('.nt')[1])" style="background:#c94c00;color:white;border:none;padding:8px 18px;border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer">→ Open Action Plan to send these now</button>
+      <span id="cnt-send" style="font-family:'DM Mono',monospace;font-size:11px;color:#ffaaaa;font-weight:700"></span>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN CLOCKS -->
+  <div style="margin-bottom:18px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#0a1628;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">⏱ Live Deadlines — Count down every second</div>
+    <div class="dd-grid" id="ddg"></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div style="margin-bottom:18px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#0a1628;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">📅 March &amp; April 2026 — Key Dates</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="cal-wrap"><div class="cal-grid" id="cal-grid"></div></div>
+      <div class="cal-wrap"><div class="cal-grid" id="cal-grid-apr"></div></div>
+    </div>
+  </div>
+
+  <!-- SECTION CARDS -->
+  <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#0a1628;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">📁 Tap any section to open it</div>
+  <div class="sec-grid">
+    <a class="sec-card c-red" onclick="showPage('send',document.querySelectorAll('.nt')[1])" style="cursor:pointer">
+      <div class="sc-icon">📋</div><div class="sc-title">Action Plan</div>
+      <div class="sc-desc">Who to email, what to say, and how to send it. Gmail button on every single step.</div>
+    </a>
+    <a class="sec-card c-gold" onclick="showPage('allfiles',document.querySelectorAll('.nt')[2])" style="cursor:pointer">
+      <div class="sc-icon">📂</div><div class="sc-title">All Files</div>
+      <div class="sc-desc">Every letter, PDF and document. Gmail · Download · Drive · Print on every row.</div>
+    </a>
+    <a class="sec-card c-pur" onclick="showPage('evidence',document.querySelectorAll('.nt')[3])" style="cursor:pointer">
+      <div class="sc-icon">🔒</div><div class="sc-title">Evidence &amp; Videos</div>
+      <div class="sc-desc">Hannah's videos, vehicle damage photos, deleted evidence — all documented.</div>
+    </a>
+    <a class="sec-card c-amb" onclick="showPage('caselaw',document.querySelectorAll('.nt')[5])" style="cursor:pointer">
+      <div class="sc-icon">⚖️</div><div class="sc-title">Legal Reference</div>
+      <div class="sc-desc">Carl Miller case law, pro se guide, 16-error report, and Monell analysis — readable on screen.</div>
+    </a>
+    <a class="sec-card" onclick="showPage('attorney',document.getElementById('nav-attorney'))" style="cursor:pointer;border-top:4px solid #8b0000">
+      <div class="sc-icon">👔</div><div class="sc-title" style="color:#8b0000">Attorney Page</div>
+      <div class="sc-desc">Everything at a glance for any attorney. Claims · Evidence · Timeline · §1988 fees · Full packet download.</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:#8b0000;margin-top:6px;font-weight:700">🚨 Body cam purge April 28 — 54 days</div>
+    </a>
+  </div>
+
+  <div class="cm-tribute" style="margin-top:18px">
+    <div class="cm-inner">
+      <div class="cm-stars">★ ★ ★</div>
+      <div class="cm-name">CARL MILLER</div>
+      <div class="cm-dates">1938 — 2014 · In Memoriam</div>
+      <div class="cm-quote">"Your Constitution is an iron-clad contract, enforceable in a court of law. Learn it. Use it. It belongs to you."</div>
+      <div class="cm-bio">Vietnam War hero · Decorated veteran — shot down four times, shot twice, never stopped fighting.<br>
+        Spent 25 years teaching ordinary Americans how to use their own Constitution to defend their rights in court.<br>
+        The Sui Juris warrior. His teachings live in every demand letter sent, every motion filed,<br>
+        every citizen who stands up and says: <em style="color:rgba(201,168,76,.7)">"I know my rights."</em>
+      </div>
+      <div class="cm-tags">
+        <span class="cm-tag">Vietnam Veteran</span>
+        <span class="cm-tag">Constitutional Educator</span>
+        <span class="cm-tag">Sui Juris</span>
+        <span class="cm-tag">Patriot</span>
+        <span class="cm-tag">1938–2014</span>
+      </div>
+      <div style="margin-top:14px">
+        <button onclick="showPage('carlmiller',document.getElementById('nav-carlmiller'))" style="background:#c9a84c;color:#0a1628;border:none;padding:8px 20px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer">★ Open Carl Miller Library →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: SEND TODAY -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-send">
+  <div class="pg-title">📋 Action Plan — Step by Step</div>
+  <div class="pg-subtitle">Every action in order · What to email · Who to send it to · Gmail button on each step</div>
+
+  <!-- HOW TO USE TIP -->
+  <div style="background:#f0f8ff;border-radius:8px;padding:10px 16px;margin-bottom:14px;border-left:4px solid #003070;font-family:'DM Mono',monospace;font-size:10px;color:#003070;line-height:1.8">
+    💡 <strong>How to use:</strong> Steps marked 🔴 still need to be sent. Click <strong>📧 Gmail</strong> on any step to open a pre-filled email — just paste your video links and hit Send. Use the filter buttons to show only unsent items.
+  </div>
+  <!-- Summary counters -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px">
+    <div style="background:#3a0000;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#ff6666" id="sg-unsent-count">—</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7)">Still Need to Send</div>
+    </div>
+    <div style="background:#0a2200;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#66ff66" id="sg-sent-count">—</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7)">Confirmed Sent</div>
+    </div>
+    <div style="background:#1a1200;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#c9a84c" id="sg-total-count">—</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7)">Total Actions</div>
+    </div>
+    <div style="background:#001a3a;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#66aaff" id="sc-doc-count">—</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7)">Documents Tracked</div>
+    </div>
+  </div>
+
+  <!-- Monell reminder banner -->
+  <div style="background:#2a0000;border-radius:8px;padding:12px 18px;margin-bottom:16px;border-left:4px solid #ff4444;font-family:'DM Mono',monospace;font-size:11px;color:#ffcccc;line-height:1.9">
+    <strong style="color:white;font-size:12px">🔴 WHAT STILL NEEDS TO GO OUT (WITH MONELL):</strong><br>
+    FDLE Combined — resend with Monell supplement &nbsp;·&nbsp; ACLU FL — resend with Monell + videos &nbsp;·&nbsp; DOJ — Monell supplement &nbsp;·&nbsp; FL AG — Monell supplement &nbsp;·&nbsp; US Attorney MDFL — Monell supplement<br>
+    New attorney outreach: Ben Crump · Farrin Law · Carey Haughwout (short video-first emails) &nbsp;·&nbsp; Apple Follow-Up OVERDUE
+  </div>
+
+  <!-- Filter bar -->
+  <div class="ctrl" style="margin-bottom:14px">
+    <input class="srch" id="srch-sc" placeholder="🔍 Search actions, agencies, documents…" oninput="filtSC(this.value)" style="width:100%;max-width:400px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+      <button class="fb on" id="sf-all"    onclick="filtSCTab('all',this)"    >All</button>
+      <button class="fb"    id="sf-unsent" onclick="filtSCTab('unsent',this)" style="background:#3a0000;color:#ffaaaa;border-color:#8b0000">🔴 Send Now</button>
+      <button class="fb"    id="sf-sent"   onclick="filtSCTab('sent',this)"   style="background:#0a2200;color:#99ff99;border-color:#005a20">✅ Sent</button>
+      <button class="fb"    id="sf-email"  onclick="filtSCTab('email',this)"  >📧 Email</button>
+      <button class="fb"    id="sf-cert"   onclick="filtSCTab('cert',this)"   >📬 Cert Mail</button>
+      <button class="fb"    id="sf-inperson" onclick="filtSCTab('inperson',this)">🏛️ In Person</button>
+    </div>
+  </div>
+
+  <div id="sg-steps"></div>
+
+  <!-- Documents table: Send Today -->
+  <div style="margin-top:24px;border-top:2px solid #eee;padding-top:18px">
+    <div class="pg-title" style="font-size:18px;margin-bottom:4px">🗂️ Document Queue</div>
+    <div class="pg-subtitle" style="margin-bottom:12px">Every document with send status. Email · Print · Download on each row.</div>
+    <div class="ctrl">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="fb on" onclick="filtSendDocs('all',this)">All</button>
+        <button class="fb" onclick="filtSendDocs('unsent',this)" style="color:#c00">🔴 Unsent</button>
+        <button class="fb" onclick="filtSendDocs('sent',this)"  style="color:#005a20">✅ Sent</button>
+        <button class="fb" onclick="filtSendDocs('email',this)">📧 Email</button>
+        <button class="fb" onclick="filtSendDocs('cert',this)">📬 Cert Mail</button>
+        <button class="fb" onclick="filtSendDocs('print',this)">🖨️ Print</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>ID</th><th>Document / Description</th><th>Send To</th><th>Deadline / Timer</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="tb-send"></tbody>
+    </table>
+
+    <!-- Confirmed Sent sub-section -->
+    <div style="margin-top:24px;border-top:2px solid #e8f5e9;padding-top:18px">
+      <div class="pg-title" style="font-size:18px;margin-bottom:4px">✅ Confirmed Sent</div>
+      <div class="pg-subtitle" style="margin-bottom:12px">All items hand-delivered or submitted with stamped receipts, service tickets, or auto-responses on file.</div>
+      <table>
+        <thead><tr><th>ID</th><th>Document</th><th>Delivered To</th><th>Date Sent</th><th>Proof</th><th>Actions</th></tr></thead>
+        <tbody id="tb-confirmed"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ═══ ALL FILES PAGE ═══ -->
+<div class="page" id="page-allfiles">
+  <div class="pg-title">📂 All Files — Every Document in the Case</div>
+  <div class="pg-subtitle">Search any document · Gmail · Download · Drive · Print — all in one place</div>
+
+  <!-- HOW IT WORKS TIP -->
+  <div style="background:#f0f8ff;border-radius:8px;padding:12px 16px;margin-bottom:16px;border-left:4px solid #003070;font-family:'DM Mono',monospace;font-size:10px;color:#003070;line-height:1.8">
+    💡 <strong>How to use this page:</strong> Use the search box to find any document by name or topic. Then click <strong>📧 Gmail</strong> to email it, <strong>⬇ Download</strong> to save it, or <strong>💾 Drive</strong> to download it and open Google Drive at the same time.
+  </div>
+
+  <!-- QUICK DOWNLOAD: KEY FILES -->
+  <div style="background:#0a1628;border-radius:10px;padding:16px 18px;margin-bottom:18px;border:1px solid #c9a84c">
+    <div style="font-family:'Playfair Display',serif;font-size:16px;color:#c9a84c;font-weight:700;margin-bottom:10px">⭐ Quick Downloads — Most Important Files</div>
+    <div style="font-family:'DM Mono',monospace;font-size:9px;color:#ff6666;margin-bottom:8px;padding:6px 10px;background:rgba(139,0,0,.1);border-radius:4px;border-left:3px solid #ff4444">⚠️ NEW FILES: Upload these 4 court filings to Google Drive, then replace DRIVE_LINK_HERE with the share link</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">
+      <a href="RIVERA_ProSe_EmergencyMotion_119_BodyCam_Mar4.docx" download style="background:rgba(139,0,0,.2);border-radius:6px;padding:10px 14px;text-decoration:none;border:2px solid #ff4444;display:block;animation:border-alarm 2s infinite">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ff6666;margin-bottom:2px">🚨 Emergency Motion — Jan 28 Body Cams</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">§119.11 + §320.07 registration defense + dash cams + CAD</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Download DOCX</div>
+      </a>
+      <a href="RIVERA_ProSe_EmergencyMotion_119_PhoneChainOfCustody_Feb8_Mar6.docx" download style="background:rgba(139,0,0,.2);border-radius:6px;padding:10px 14px;text-decoration:none;border:2px solid #ff4444;display:block;animation:border-alarm 2s infinite">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ff6666;margin-bottom:2px">🚨 Emergency Motion — Feb 8-9 Phone</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Chain of custody + Bell Tower + Riley v. California</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Download DOCX</div>
+      </a>
+      <a href="RIVERA_PreSuit_Petition_1290_BusinessFootage_AllLocations_Mar6.docx" download style="background:rgba(139,0,0,.2);border-radius:6px;padding:10px 14px;text-decoration:none;border:2px solid #ff4444;display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ff6666;margin-bottom:2px">🔴 Pre-Suit Petition — 8 Businesses</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Rule 1.290 — Spios, BP, Circle K, Walgreens, Ross, Five Below, Benderson, Bell Tower</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Download DOCX</div>
+      </a>
+      <a href="RIVERA_PreSuit_Petition_1290_Apple_iCloudRecords_Mar6.docx" download style="background:rgba(139,0,0,.2);border-radius:6px;padding:10px 14px;text-decoration:none;border:2px solid #ff4444;display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ff6666;margin-bottom:2px">🔴 Pre-Suit Petition — Apple iCloud</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Access logs + deletion records + law enforcement requests</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Download DOCX</div>
+      </a>
+      <a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" download style="background:rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;text-decoration:none;border:1px solid rgba(201,168,76,.3);display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c9a84c;margin-bottom:2px">📦 Complete ZIP Archive</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">All 51 documents in one zip file</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Click to download</div>
+      </a>
+      <a href="RIVERA_AttorneyPacket_v2_Mar4.pdf" target="_blank" download style="background:rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;text-decoration:none;border:1px solid rgba(201,168,76,.3);display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c9a84c;margin-bottom:2px">⭐ Attorney Packet v2</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Send to any attorney — §1988 fee shifting</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Click to download</div>
+      </a>
+      <a href="RIVERA_MasterCaseFile_March4_FINAL.pdf" target="_blank" download style="background:rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;text-decoration:none;border:1px solid rgba(201,168,76,.3);display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c9a84c;margin-bottom:2px">📄 Master Case File PDF</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Complete case summary — all claims</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Click to download</div>
+      </a>
+      <a href="RIVERA_Federal_Complaint_1983_DRAFT.pdf" target="_blank" download style="background:rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;text-decoration:none;border:1px solid rgba(201,168,76,.3);display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c9a84c;margin-bottom:2px">⚖️ §1983 Draft Complaint</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Federal court complaint — ready to file</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Click to download</div>
+      </a>
+      <a href="RIVERA_ProSe_EmergencyMotion_119_BodyCam_Mar4.pdf" target="_blank" download style="background:rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;text-decoration:none;border:1px solid rgba(201,168,76,.3);display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c9a84c;margin-bottom:2px">🚨 Emergency Motion</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">§119.11 body cam preservation — April 28</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Click to download</div>
+      </a>
+      <a href="RIVERA_ResearchAndStatutes.pdf" target="_blank" download style="background:rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;text-decoration:none;border:1px solid rgba(201,168,76,.3);display:block">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c9a84c;margin-bottom:2px">📝 Witness Statement</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6)">Hannah's formal witness account</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#66ff66;margin-top:4px">⬇ Click to download</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- TABS: All PDFs | All Documents -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button id="af-tab-pdfs" onclick="showAFTab('pdfs',this)" style="background:#0a1628;color:white;border:none;padding:9px 18px;border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer">📋 All PDFs</button>
+    <button id="af-tab-docs" onclick="showAFTab('docs',this)" style="background:#ddd;color:#333;border:none;padding:9px 18px;border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">📄 All Letters &amp; Submissions</button>
+  </div>
+
+  <!-- PDF Library panel -->
+  <div id="af-panel-pdfs">
+    <div class="ctrl">
+      <input class="srch" placeholder="🔍 Search PDFs by name, topic, or recipient..." oninput="filtPdfSearch(this.value)">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        <button class="fb on" id="fb-all" onclick="filtPdfs('all',this)">All</button>
+        <button class="fb" onclick="filtPdfs('unsent',this)" style="background:#c94c00;color:white;font-weight:bold">🔴 Send Now</button>
+        <button class="fb" onclick="filtPdfs('sent',this)">✅ Sent</button>
+        <button class="fb" onclick="filtPdfs('atty',this)" style="font-weight:bold">⭐ Attorney</button>
+        <button class="fb" onclick="filtPdfs('lcso',this)">LCSO</button>
+        <button class="fb" onclick="filtPdfs('fdle',this)">FDLE</button>
+        <button class="fb" onclick="filtPdfs('monell',this)">Monell</button>
+        <button class="fb" onclick="filtPdfs('apple',this)">Apple</button>
+      </div>
+    </div>
+    <div id="pdf-lib"></div>
+  </div>
+
+  <!-- Documents table panel (hidden by default) -->
+  <div id="af-panel-docs" style="display:none">
+    <div class="ctrl">
+      <input class="srch" id="srch-docs" placeholder="🔍 Search documents..." oninput="filtDocs(this.value)">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        <button class="fb on" id="fb-docs-all" onclick="filtDocsTab('all',this)">All</button>
+        <button class="fb" onclick="filtDocsTab('unsent',this)" style="color:#c00">🔴 Not Sent</button>
+        <button class="fb" onclick="filtDocsTab('sent',this)" style="color:#005a20">✅ Sent</button>
+        <button class="fb" onclick="filtDocsTab('em',this)">📧 Email</button>
+        <button class="fb" onclick="filtDocsTab('cm',this)">📬 Cert Mail</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>ID</th><th>Document / Description</th><th>Send To</th><th>Deadline</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="tb-send2"></tbody>
+      <tbody id="tb-docs"></tbody>
+    </table>
+  </div>
+
+</div>
+
+
+
+
+<div class="page" id="page-evidence">
+  <div class="pg-title">🔒 Evidence &amp; Videos</div>
+  <div class="pg-subtitle">All evidence items · Hannah's videos · Vehicle damage photos · Deleted evidence documentation</div>
+
+  <div style="background:#f0f8ff;border-radius:8px;padding:10px 16px;margin-bottom:14px;border-left:4px solid #003070;font-family:'DM Mono',monospace;font-size:10px;color:#003070;line-height:1.8">
+    💡 <strong>Tip:</strong> Evidence cards show chain of custody and legal significance for each item. Scroll down for Hannah's videos and vehicle damage photos. The 🚨 items are your strongest evidence.
+  </div>
+
+  <!-- Evidence cards -->
+  <div id="ev-cards"></div>
+
+  <!-- Videos section embedded here -->
+  <div style="margin-top:24px;padding-top:18px;border-top:3px solid #8b0000">
+    <div class="pg-title" style="font-size:18px;margin-bottom:4px">🎥 Video Evidence</div>
+    <div class="pg-subtitle" style="margin-bottom:14px">Hannah's recordings · Deleted footage documentation · Vehicle damage photos</div>
+  <div style="background:#0a2200;border-radius:10px;padding:14px 18px;margin-bottom:18px;border-left:4px solid #33ff66">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:#90ff90;margin-bottom:5px">📌 HOW TO EMBED YOUR VIDEOS</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.8);line-height:2">
+      1. Upload video to Google Drive → Share → Anyone with link → Copy link<br>
+      2. Get the FILE ID from the URL: drive.google.com/file/d/<strong style="color:#c9a84c">FILE_ID</strong>/view<br>
+      3. Use embed URL: <code style="color:#c9a84c">https://drive.google.com/file/d/FILE_ID/preview</code><br>
+      4. Replace FILE_ID placeholders below, then re-upload this index.html to GitHub
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+    <div style="background:white;border-radius:10px;overflow:hidden;border-top:5px solid #8b0000;box-shadow:0 2px 14px rgba(0,0,0,.1)">
+      <div style="background:#8b0000;padding:12px 16px">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:white;font-weight:700">📹 VIDEO 1 — Rivera on Ground · 4-Officer Takedown</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6);margin-top:2px">Hannah's phone · Jan 28, 2026 · SAFE</div>
+      </div>
+      <div style="background:#111;aspect-ratio:16/9;position:relative;overflow:hidden">
+        <iframe src="https://drive.google.com/file/d/1-wg4Tns1495V2rNvyEApHBg9lq_anLnh/preview" width="100%" height="100%" style="position:absolute;top:0;left:0;border:none" allow="autoplay"></iframe>
+      </div>
+      <div style="padding:12px 16px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.8;margin-bottom:8px"><strong>What it shows:</strong> Rivera on ground, all 4 LCSO deputies. Four-officer takedown of non-resistant individual on a registration citation.<br><strong>Legal:</strong> Graham v. Connor — all 3 factors favor Rivera. No QI.</div>
+        <span style="background:#005a20;color:white;padding:4px 10px;border-radius:4px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700">✅ SAFE — on Hannah's phone</span>
+      </div>
+    </div>
+    <div style="background:white;border-radius:10px;overflow:hidden;border-top:5px solid #003070;box-shadow:0 2px 14px rgba(0,0,0,.1)">
+      <div style="background:#003070;padding:12px 16px">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:white;font-weight:700">📹 VIDEO 2 — Initial Contact · First 4 Minutes</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6);margin-top:2px">Hannah's phone · Jan 28, 2026 · SAFE</div>
+      </div>
+      <div style="background:#111;aspect-ratio:16/9;position:relative;overflow:hidden">
+        <iframe src="https://drive.google.com/file/d/1gJE-V6JDWtBsLI47aUHRPl6dwdpJ8b6F/preview" width="100%" height="100%" style="position:absolute;top:0;left:0;border:none" allow="autoplay"></iframe>
+      </div>
+      <div style="padding:12px 16px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.8;margin-bottom:8px"><strong>What it shows:</strong> Initial 4-minute contact — officer approach, escalation from citation to takedown.<br><strong>Legal:</strong> Rodriguez v. US — no basis to extend stop beyond citation issuance.</div>
+        <span style="background:#005a20;color:white;padding:4px 10px;border-radius:4px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700">✅ SAFE — on Hannah's phone</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#1a0000;border-radius:10px;padding:16px 18px;margin-bottom:18px;border:2px solid #8b0000">
+    <div style="font-family:'Playfair Display',serif;font-size:16px;color:#ff6666;font-weight:700;margin-bottom:10px">🚨 DELETED / MISSING VIDEO EVIDENCE — SPOLIATION</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:rgba(255,255,255,.05);border-radius:6px;padding:12px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ffaaaa;margin-bottom:4px">Rivera's Phone Video — DELETED BY LCSO</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7);line-height:1.8">Recorded full interaction Jan 28 start to finish. Officer deleted directly from Rivera's phone during stop. First Amendment violation + Fla. Stat. §839.13(2)(a). No QI — right clearly established in 11th Cir. 2000.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.05);border-radius:6px;padding:12px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ffaaaa;margin-bottom:4px">iCloud Library — 2 Years MISSING</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.7);line-height:1.8">2 years of video footage gone from iCloud after Feb 8-9 phone incident. Apple preservation hold active. DO NOT reset or update phone. Recovery possible via attorney subpoena. Accounts: copyproxy88 + luvdontlivecold.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:white;border-radius:10px;padding:0;overflow:hidden;border-top:4px solid #c94c00;box-shadow:0 2px 14px rgba(0,0,0,.08)">
+    <div style="background:#c94c00;padding:12px 16px">
+      <div style="font-family:'Playfair Display',serif;font-size:15px;color:white;font-weight:700">📷 Vehicle Damage Photos — Warrantless Destructive Search</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6);margin-top:2px">Collins v. Virginia (2018) — warrantless destructive search = Fourth Amendment violation</div>
+    </div>
+    <div style="padding:14px 16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div style="border-radius:6px;overflow:hidden;border:2px solid #c94c00;background:#f9f7f0">
+          <img src="vehicle_damage_photo_1.jpg" alt="Vehicle damage 1" style="width:100%;display:block" onerror="this.parentElement.innerHTML='<div style=padding:30px;text-align:center;font-family:DM Mono,monospace;font-size:10px;color:#888>📷 Upload vehicle_damage_photo_1.jpg to GitHub</div>'">
+          <div style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:9px;color:#333">Cup holder / center console damage</div>
+        </div>
+        <div style="border-radius:6px;overflow:hidden;border:2px solid #c94c00;background:#f9f7f0">
+          <img src="vehicle_damage_photo_2.jpg" alt="Vehicle damage 2" style="width:100%;display:block" onerror="this.parentElement.innerHTML='<div style=padding:30px;text-align:center;font-family:DM Mono,monospace;font-size:10px;color:#888>📷 Upload vehicle_damage_photo_2.jpg to GitHub</div>'">
+          <div style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:9px;color:#333">Door panel / razor + cut marks</div>
+        </div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#555;line-height:1.8">
+        <strong>Note:</strong> Original iCloud video of damage is MISSING (same account affected by Feb 8-9 incident). Upload photos to GitHub repo root — they auto-display above. Take additional photos if accessible: all 4 doors, cup holder, razor marks, use coin for scale.
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+<!-- ═══ ATTORNEY PAGE ═══ -->
+<div class="page" id="page-attorney">
+  <div class="pg-title">⚖️ Attorney Briefing — Rivera v. LCSO</div>
+  <div class="pg-subtitle">Everything at a glance · Case value · Claims · Evidence · What's been done · What you get paid</div>
+
+  <!-- ATTORNEY TIP BAR -->
+  <!-- SHAREABLE LINK BOX -->
+  <div style="background:#0a1628;border-radius:10px;padding:14px 18px;margin-bottom:14px;border:2px solid #c9a84c">
+    <div style="font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:#c9a84c;margin-bottom:6px;letter-spacing:.5px">🔗 SHAREABLE DIRECT LINK — SEND THIS TO ANY ATTORNEY</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <code id="atty-share-url" style="background:rgba(255,255,255,.1);border-radius:5px;padding:8px 14px;font-family:'DM Mono',monospace;font-size:11px;color:white;border:1px solid rgba(201,168,76,.4);flex:1;min-width:200px;word-break:break-all">https://jriveralegal.github.io/rivera-case/#attorney</code>
+      <button onclick="navigator.clipboard.writeText('https://jriveralegal.github.io/rivera-case/#attorney').then(()=>{const b=this;b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy Link',2000)})" style="background:#c9a84c;color:#0a1628;border:none;padding:9px 16px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">📋 Copy Link</button>
+      <a href="/cdn-cgi/l/email-protection#46793533242c2325327b142f30233427663068660a05150966a4c6d266052f302f2a66142f212e3235660527352366a4c6d266073232293428233f661423302f2331602429223f7b162a23273523663423302f233166322e2f3566252f302f2a66342f212e3235662527352366273266322e23662a2f282d6624232a29316866122e23663627212366293623283566222f342325322a3f66322966322e2366273232293428233f6624342f23202f282166312f322e66272a2a66252a272f2b356a6623302f22232825236a66322f2b232a2f28236a66272822663627252d233266222931282a29272235686376076376072e323236357c69692c342f302334272a2321272a68212f322e3324682f2969252735236b202f2a236b6965273232293428233f6376076376070d233f6620272532357c6376076b6684e1777f7e75662023222334272a66252f302f2a66342f212e32356625273523662721272f283532660a0515096376076b66102f2223296623302f222328252366233e2f353235666e3423252934222f28216f6376076b660429223f6625272b662029293227212366363334212335660736342f2a66747e6a667476747066a4c6d266232b2334212328253f663634233523343027322f2928662823232223226376076b6684e1777f7e7e6620232366352e2f20322f282166a4c6d2660a0515096636273f35663f2933346620232335662f20663f29336636342330272f2a6376076b6615090a7c660c27283327343f66747e6a667476747e" style="background:#1a73e8;color:white;padding:9px 14px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;white-space:nowrap">📧 Email to Attorney</button>
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.6);margin-top:6px">This link opens directly to the attorney briefing page — no navigation required. Works on any device.</div>
+  </div>
+
+  <div style="background:#003070;border-radius:8px;padding:10px 18px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.85);line-height:1.9;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <span>💡 <strong style="color:#c9a84c">For attorneys:</strong> This page is your complete case brief. Scroll or use the jump links below. Attorney packet PDF at the bottom.</span>
+    <a href="#atty-fees" style="color:#66aaff;font-weight:700">→ Jump to §1988 Fee Info</a>
+    <a href="#atty-packet" style="color:#c9a84c;font-weight:700">→ Download Packet</a>
+  </div>
+
+  <!-- JUMP LINKS -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">
+    <a href="#atty-oneliner" style="background:#f0f4ff;color:#003070;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;border:1px solid #c0ccee">📌 Case Summary</a>
+    <a href="#atty-claims" style="background:#f0f4ff;color:#003070;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;border:1px solid #c0ccee">⚖️ Claims</a>
+    <a href="#atty-evidence" style="background:#f0f4ff;color:#003070;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;border:1px solid #c0ccee">🔒 Evidence</a>
+    <a href="#atty-timeline" style="background:#f0f4ff;color:#003070;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;border:1px solid #c0ccee">📅 Timeline</a>
+    <a href="#atty-done" style="background:#f0f4ff;color:#003070;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;border:1px solid #c0ccee">✅ Already Done</a>
+    <a href="#atty-fees" style="background:#005a20;color:white;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none">💰 §1988 — You Get Paid</a>
+    <a href="#atty-packet" style="background:#8b0000;color:white;padding:6px 12px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-decoration:none">📦 Download Full Packet</a>
+  </div>
+
+  <!-- ══ 1. ONE-LINER ════════════════════════════════════════════ -->
+  <div id="atty-oneliner" style="background:linear-gradient(135deg,#0a1628,#1a3a6a);border-radius:12px;padding:20px 22px;margin-bottom:18px;border:2px solid #c9a84c">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#c9a84c;margin-bottom:12px">📌 Case in One Paragraph</div>
+    <div style="font-family:'Crimson Pro',Georgia,serif;font-size:15px;color:rgba(255,255,255,.95);line-height:1.9">
+      On <strong style="color:white">January 28, 2026</strong>, Joseph Rivera was pulled over in San Carlos Park, Lee County, FL for a registration citation. Four Lee County Sheriff's Office deputies responded, physically took Rivera to the ground without resistance, threatened a Baker Act psychiatric hold to coerce compliance, <strong style="color:#ff9999">deleted Rivera's phone recording of the entire stop</strong>, conducted a warrantless destructive search of his vehicle causing physical damage, and refused to document the use of force. Rivera's girlfriend Hannah recorded the takedown on her phone — those videos are safe. LCSO has since obstructed three separate Chapter 119 records requests using documented, coordinated methods. Eight body cameras are scheduled to auto-purge on <strong style="color:#ff9999">April 28, 2026</strong>. Rivera has preserved everything, filed with FDLE, DOJ, ACLU, and sent demand letters. He needs an attorney now.
+    </div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <span style="background:rgba(201,168,76,.2);border:1px solid #c9a84c;border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:9px;color:#c9a84c;font-weight:700">§1983 Civil Rights — Federal Court</span>
+      <span style="background:rgba(201,168,76,.2);border:1px solid #c9a84c;border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:9px;color:#c9a84c;font-weight:700">Monell Municipal Liability</span>
+      <span style="background:rgba(201,168,76,.2);border:1px solid #c9a84c;border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:9px;color:#c9a84c;font-weight:700">SOL: January 28, 2028</span>
+      <span style="background:rgba(201,168,76,.2);border:1px solid #c9a84c;border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:9px;color:#c9a84c;font-weight:700">Body Cam Purge: April 28, 2026</span>
+      <span style="background:rgba(255,100,100,.2);border:1px solid #ff6666;border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:9px;color:#ff9999;font-weight:700">⏰ TIME-SENSITIVE — 54 DAYS</span>
+    </div>
+  </div>
+
+  <!-- ══ 2. CLAIMS ══════════════════════════════════════════════ -->
+  <div id="atty-claims" style="margin-bottom:18px">
+    <div style="background:#0a1628;color:#c9a84c;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;padding:13px 18px;border-radius:10px 10px 0 0">⚖️ Claims — Bullet Summary</div>
+    <div style="background:white;border-radius:0 0 10px 10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px 20px">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+        <div style="border-left:4px solid #8b0000;padding-left:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#8b0000;margin-bottom:6px;text-transform:uppercase">🚨 First Amendment — Recording Deleted</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.1;margin:0;padding-left:16px">
+            <li>Rivera recording his own traffic stop — protected First Amendment activity</li>
+            <li>LCSO officer deleted recording directly from Rivera's phone during the stop</li>
+            <li>11th Circuit controlling: <em>Smith v. City of Cumming</em> — right clearly established, no QI</li>
+            <li>Deletion = destruction of evidence (Fla. Stat. §839.13) + federal spoliation</li>
+            <li>No discipline, no documentation = LCSO ratification of the custom</li>
+          </ul>
+        </div>
+
+        <div style="border-left:4px solid #c94c00;padding-left:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#c94c00;margin-bottom:6px;text-transform:uppercase">🚔 Fourth Amendment — Stop Extended + Search</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.1;margin:0;padding-left:16px">
+            <li>Registration citation only — no basis to extend stop beyond issuance</li>
+            <li><em>Rodriguez v. United States</em> (2015, unanimous SCOTUS) — stop cannot be extended</li>
+            <li>Warrantless destructive vehicle search — physical damage to interior</li>
+            <li><em>Collins v. Virginia</em> (2018) — warrantless destructive search = Fourth Amendment violation</li>
+            <li>Four officers deployed for a non-criminal registration citation</li>
+          </ul>
+        </div>
+
+        <div style="border-left:4px solid #c9a84c;padding-left:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#7a4000;margin-bottom:6px;text-transform:uppercase">👊 Excessive Force — Graham v. Connor</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.1;margin:0;padding-left:16px">
+            <li>Ground takedown of non-resistant individual on registration citation</li>
+            <li>All three <em>Graham v. Connor</em> factors favor Rivera: no crime, no resistance, no flight risk</li>
+            <li>Hannah's video shows takedown — no provocation visible</li>
+            <li>Four-officer response = excessive deployment, no documented justification</li>
+            <li>No use-of-force report filed — itself a policy violation and cover-up</li>
+          </ul>
+        </div>
+
+        <div style="border-left:4px solid #6600cc;padding-left:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#440088;margin-bottom:6px;text-transform:uppercase">🏥 Due Process — Baker Act Coercion</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.1;margin:0;padding-left:16px">
+            <li>Officer threatened involuntary psychiatric hold (Baker Act) to force compliance</li>
+            <li>No statutory basis — Rivera exhibited no criteria for Baker Act</li>
+            <li><em>Zinermon v. Burch</em> — involuntary commitment requires valid statutory predicate</li>
+            <li>Threat = coercion to waive rights, violates 14th Amendment due process</li>
+            <li>Documented in witness statement under penalty of perjury</li>
+          </ul>
+        </div>
+
+        <div style="border-left:4px solid #005a20;padding-left:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#005a20;margin-bottom:6px;text-transform:uppercase">🏛️ Monell — Municipal Policy / Custom</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.1;margin:0;padding-left:16px">
+            <li>Three separate documented methods of records obstruction = deliberate policy</li>
+            <li>Body cam purge after written litigation hold = deliberate indifference (Sheriff = final policymaker)</li>
+            <li>No discipline for recording deletion = ratification of custom (<em>City of Canton</em>)</li>
+            <li>Single final-policymaker decision sufficient: <em>Pembaur v. Cincinnati</em></li>
+            <li>Attorney fee shifting under 42 U.S.C. §1988 — LCSO pays your fees if you prevail</li>
+          </ul>
+        </div>
+
+        <div style="border-left:4px solid #003070;padding-left:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070;margin-bottom:6px;text-transform:uppercase">📁 Chapter 119 — Public Records Obstruction</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.1;margin:0;padding-left:16px">
+            <li>Three simultaneous obstruction methods: merged requests, excessive fees, expired portal</li>
+            <li>Fee rate of $144.73/hr exceeds §119.07(4)(d) statutory cap — documented</li>
+            <li>Portal activation expired — LCSO refused to renew, resets clock</li>
+            <li>Separate records request for Feb 8-9 phone incident — also obstructed</li>
+            <li>Mandamus action available in addition to §1983 — dual track</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Qualified Immunity note -->
+      <div style="margin-top:14px;background:#f9f7f0;border-radius:8px;padding:12px 16px;border-left:4px solid #c9a84c">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#7a4000;margin-bottom:4px">🛡️ QUALIFIED IMMUNITY STATUS</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.9">
+          • Recording deletion: QI defeated — <em>Smith v. City of Cumming</em> (11th Cir. 2000) clearly establishes the right in this circuit<br>
+          • Excessive force on non-resistant subject: QI difficult — <em>Graham</em> factors all favor Rivera, video evidence<br>
+          • Extended stop: QI defeated — <em>Rodriguez</em> is unanimous SCOTUS (2015), cannot claim ignorance<br>
+          • Baker Act coercion: QI available for argument but <em>Zinermon</em> statutory predicate requirement is established
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 3. EVIDENCE ════════════════════════════════════════════ -->
+  <div id="atty-evidence" style="margin-bottom:18px">
+    <div style="background:#3a0000;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;padding:13px 18px;border-radius:10px 10px 0 0">🔒 Evidence — What Exists Right Now</div>
+    <div style="background:white;border-radius:0 0 10px 10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px 20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#005a20;margin-bottom:6px">✅ SAFE — EXISTS NOW</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2;margin:0;padding-left:16px">
+            <li><strong>Hannah's Video 1</strong> — Rivera on ground, all 4 deputies visible</li>
+            <li><strong>Hannah's Video 2</strong> — Initial contact, first 4 minutes of stop</li>
+            <li><strong>Both stamped LCSO records receipts</strong> — Feb 25 + Feb 26, in person</li>
+            <li><strong>LCSO 3-part portal email</strong> — excessive fees, keyword demands, merger attempt documented</li>
+            <li><strong>All 6 Rivera response letters</strong> (LR-1 through LR-6) — sent + confirmed</li>
+            <li><strong>Witness statement</strong> — Hannah, sworn, 11 sections, penalty of perjury</li>
+            <li><strong>Citation 26-051270</strong> (Rogers) + <strong>docket 26-TR-005517</strong> — discrepancy documented</li>
+            <li><strong>Vehicle damage photos</strong> — warrantless destructive search documentation</li>
+            <li><strong>FDLE complaint + escalation</strong> — filed and mailed</li>
+            <li><strong>DOJ + ACLU portal submissions</strong> — filed Feb 25-26</li>
+            <li><strong>Apple iCloud preservation hold</strong> — active, both accounts</li>
+            <li><strong>Litigation hold on LCSO</strong> — delivered in person Feb 25, stamped</li>
+          </ul>
+        </div>
+
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#8b0000;margin-bottom:6px">🚨 AT RISK / MISSING — URGENT</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2;margin:0;padding-left:16px">
+            <li><strong style="color:#c00">8 LCSO body cameras</strong> — auto-purge April 28, 2026 (54 days)</li>
+            <li><strong style="color:#c00">Rivera's phone recording</strong> — deleted by officer during stop</li>
+            <li><strong style="color:#c00">2 years of iCloud video</strong> — missing after Feb 8-9 phone incident in LCSO custody</li>
+            <li><strong>LCSO CAD / dispatch logs</strong> — need subpoena (4-officer dispatch for citation?)</li>
+            <li><strong>Officer body cam footage</strong> — 8 cameras, all purge April 28</li>
+            <li><strong>LCSO use-of-force report</strong> — none filed, which is itself the violation</li>
+            <li><strong>Feb 8-9 phone chain of custody</strong> — LCSO has no documentation</li>
+          </ul>
+          <div style="background:#fff5f5;border-radius:6px;padding:8px 12px;margin-top:8px;border-left:3px solid #c00">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#8b0000;font-weight:700">⏰ EMERGENCY ACTION NEEDED</div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#333;line-height:1.8;margin-top:2px">Emergency motion for §119.11 preservation order must be filed before April 28. Pro se draft is ready. Attorney filing = much stronger. 54 days remaining.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 4. TIMELINE ════════════════════════════════════════════ -->
+  <div id="atty-timeline" style="margin-bottom:18px">
+    <div style="background:#003070;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;padding:13px 18px;border-radius:10px 10px 0 0">📅 Key Dates — Chronological</div>
+    <div style="background:white;border-radius:0 0 10px 10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px 20px">
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:4px 14px;align-items:start">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070">Jan 28, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">Traffic stop · 4-officer response · ground takedown · Baker Act threat · recording deleted · vehicle searched and damaged</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070">Feb 8-9, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">Rivera's phone taken by LCSO under disputed circumstances · 2 years of iCloud video missing after return · conflicting officer/sergeant accounts · no chain of custody</div>
+
+        <div style="font-fa
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070">Feb 25-26, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">Records requests filed in person (Jan 28 + Feb 8-9 incidents) · Litigation hold served · IA complaint filed · FDLE complaint filed · DOJ + ACLU portals submitted · Apple preservation hold sent · Business preservation demands delivered</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070">Mar 1, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">LCSO 3-part email received — portal activation (expires Mar 14), keyword demands (due Mar 18), merged request attempt + excessive fees ($144.73/hr, cap is statutory) — all three methods documented</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070">Mar 4, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">All 6 LCSO response letters sent (LR-1 through LR-6) · Fee challenge sent · Non-response notices sent · Clerk objection sent · FDLE escalation mailed · Monell letters prepared</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ff6600">Mar 14, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8b4000;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">⚠️ LCSO portal activation expires — must demand new link before this date</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#ff6600">Mar 18, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8b4000;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee">⚠️ LCSO keyword list deadline — Rivera objected, but LCSO considers this a prerequisite</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#8b0000;animation:flash-red .8s infinite">Apr 28, 2026</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8b0000;line-height:1.7;padding-bottom:8px;border-bottom:1px solid #eee;font-weight:700">🚨 8 LCSO BODY CAMERAS AUTO-PURGE — PRESERVATION ORDER REQUIRED BEFORE THIS DATE</div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070">Jan 28, 2028</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.7;padding-bottom:8px">SOL — §1983 statute of limitations · 4-year argument also available (§95.11(3)(p)) extending to Jan 28, 2030</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 5. WHAT'S DONE ════════════════════════════════════════════ -->
+  <div id="atty-done" style="margin-bottom:18px">
+    <div style="background:#005a20;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;padding:13px 18px;border-radius:10px 10px 0 0">✅ What Rivera Has Already Done — You Pick Up Here</div>
+    <div style="background:white;border-radius:0 0 10px 10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px 20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2;margin:0;padding-left:16px">
+          <li>✅ Records requests filed in person — Feb 25-26, stamped receipts on file</li>
+          <li>✅ Litigation hold served on LCSO in person — Feb 25</li>
+          <li>✅ Internal Affairs complaint filed — Feb 25</li>
+          <li>✅ FDLE civil rights complaint filed + mailed — Feb 26 + March 4</li>
+          <li>✅ DOJ Civil Rights portal submitted — Feb 26</li>
+          <li>✅ ACLU Florida portal submitted — Feb 26</li>
+          <li>✅ Apple iCloud preservation hold sent — both accounts</li>
+          <li>✅ Business surveillance preservation demands — BP, Circle K, Walgreens (delivered + mailed)</li>
+        </ul>
+        <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2;margin:0;padding-left:16px">
+          <li>✅ 6 detailed LCSO response letters sent (LR-1 through LR-6) — March 4</li>
+          <li>✅ Fee challenge sent — documents $144.73/hr vs. statutory cap</li>
+          <li>✅ Clerk of Courts objection filed — certified mail</li>
+          <li>✅ Witness statement — Hannah, sworn, 11 sections</li>
+          <li>✅ §768.28 pre-suit notice drafted and ready to send</li>
+          <li>✅ Emergency motion for body cam preservation — pro se draft ready</li>
+          <li>✅ Draft §1983 federal complaint — ready for attorney review</li>
+          <li>✅ Full case portal at jriveralegal.github.io/rivera-case</li>
+        </ul>
+      </div>
+      <div style="background:#f0fff4;border-radius:8px;padding:12px 16px;margin-top:12px;border-left:4px solid #005a20;font-family:'DM Mono',monospace;font-size:10px;color:#003a12;line-height:1.9">
+        <strong>Translation for attorneys:</strong> The pre-litigation groundwork is largely done. Rivera has documented every violation, filed with every oversight agency, and preserved what can be preserved. You are stepping into a case that is organized, documented, and ready. Your first critical action is the April 28 body cam preservation motion.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 6. FEES ════════════════════════════════════════════════════ -->
+  <div id="atty-fees" style="margin-bottom:18px">
+    <div style="background:#005a20;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;padding:13px 18px;border-radius:10px 10px 0 0">💰 42 U.S.C. §1988 — You Get Paid by LCSO if You Win</div>
+    <div style="background:white;border-radius:0 0 10px 10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px 20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#005a20;margin-bottom:8px;text-transform:uppercase">HOW §1988 WORKS</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2;margin:0;padding-left:16px">
+            <li>In any successful §1983 civil rights action, the <strong>defendant (LCSO) pays your attorney fees</strong></li>
+            <li>Rivera pays <strong>nothing out of pocket</strong> — contingency case, your fees come from LCSO</li>
+            <li>Fee amount = your reasonable hourly rate × hours worked, paid by the losing government party</li>
+            <li>Courts have approved rates of $300–$600/hr for civil rights attorneys in the 11th Circuit</li>
+            <li>Settlement negotiations often include lump-sum attorney fee component</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#005a20;margin-bottom:8px;text-transform:uppercase">WHY THIS CASE IS WORTH TAKING</div>
+          <ul style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2;margin:0;padding-left:16px">
+            <li><strong>Video evidence exists</strong> — Hannah's 2 videos of the takedown</li>
+            <li><strong>Multiple clear violations</strong> — recording deleted, stop extended, warrantless search</li>
+            <li><strong>Monell claim against LCSO (not just officers)</strong> — deeper pockets, policy-level liability</li>
+            <li><strong>QI defeated on key claims</strong> — Smith v. Cumming (11th Cir.) on recording deletion</li>
+            <li><strong>Pre-litigation work done</strong> — records, agencies, preservation all in place</li>
+            <li><strong>Documented obstruction</strong> — adds Chapter 119 and bad faith claims</li>
+          </ul>
+        </div>
+      </div>
+      <div style="background:#f0fff4;border-radius:8px;padding:14px 18px;margin-top:14px;border:2px solid #005a20;text-align:center">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:#003a12">📞 CONTACT — Joseph Anthony Rivera</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#333;margin-top:6px;line-height:2">
+          📱 (239) 220-9313 &nbsp;·&nbsp; 🌐 jriveralegal.github.io/rivera-case
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 7. DOWNLOAD PACKET ════════════════════════════════════════ -->
+  <div id="atty-packet" style="margin-bottom:18px">
+    <div style="background:#0a1628;color:#c9a84c;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;padding:13px 18px;border-radius:10px 10px 0 0">📦 Download Full Attorney Packet</div>
+    <div style="background:white;border-radius:0 0 10px 10px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:16px 20px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+        <div style="background:#f9f7f2;border-radius:8px;padding:14px;border-top:3px solid #c9a84c">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#7a4000;margin-bottom:4px">⭐ ATTORNEY PACKET v2</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#555;margin-bottom:8px;line-height:1.8">Complete case file. All claims, evidence, violations, case law, draft §1983 complaint, Monell analysis.</div>
+          <a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" style="display:inline-block;background:#c9a84c;color:#0a1628;padding:7px 14px;border-radius:5px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;text-decoration:none">📁 Open in Drive</a>
+        </div>
+        <div style="background:#f9f7f2;border-radius:8px;padding:14px;border-top:3px solid #003070">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#003070;margin-bottom:4px">📄 MASTER CASE FILE PDF</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#555;margin-bottom:8px;line-height:1.8">All letters, submissions, research appendix, verbatim statutes, all case law.</div>
+          <a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" style="display:inline-block;background:#003070;color:white;padding:7px 14px;border-radius:5px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;text-decoration:none">📁 Open in Drive</a>
+        </div>
+        <div style="background:#fff8f8;border-radius:8px;padding:14px;border-top:3px solid #8b0000">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#8b0000;margin-bottom:4px">🚨 EMERGENCY MOTION</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#555;margin-bottom:8px;line-height:1.8">§119.11 body cam preservation. Must be filed before April 28, 2026. Pro se draft ready.</div>
+          <a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" style="display:inline-block;background:#8b0000;color:white;padding:7px 14px;border-radius:5px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;text-decoration:none">📁 Open in Drive</a>
+        </div>
+        <div style="background:#f8fff8;border-radius:8px;padding:14px;border-top:3px solid #005a20">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#005a20;margin-bottom:4px">📦 COMPLETE ZIP ARCHIVE</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#555;margin-bottom:8px;line-height:1.8">All 51 documents — DOCX + PDF — organized in 10 folders.</div>
+          <a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" style="display:inline-block;background:#005a20;color:white;padding:7px 14px;border-radius:5px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;text-decoration:none">📁 Open in Drive</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carl Miller attorney CTA -->
+  <div style="background:linear-gradient(135deg,#080808,#111,#0a0808);border-radius:12px;padding:28px;text-align:center;margin-bottom:18px;border:1px solid rgba(201,168,76,.3)">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;color:#c9a84c;font-weight:900;margin-bottom:10px">Are You a Carl Miller Attorney?</div>
+    <div style="font-family:'Crimson Pro',Georgia,serif;font-style:italic;font-size:15px;color:rgba(255,255,255,.85);line-height:1.9;max-width:600px;margin:0 auto 16px">
+      Six documented Monell violations from a single traffic stop.<br>
+      Qualified immunity already defeated — <em>three</em> SCOTUS and 11th Circuit cases on point.<br>
+      Video evidence. Sworn declaration. Written litigation hold. April 28 body cam deadline.<br>
+      <strong style="color:#c9a84c">§1988 fee shifting — Lee County pays your fees when you win.</strong>
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(201,168,76,.7);font-style:italic">This is the Monell pattern case civil rights attorneys built their careers to prosecute.</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: CARL MILLER                                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-carlmiller">
+  <div class="pg-title">★ Carl Miller — Constitutional Warrior</div>
+  <div class="pg-subtitle">1938–2014 · Vietnam Veteran · Constitutional Educator · "Learn it. Use it. It belongs to you."</div>
+
+  <div class="cm-tribute" style="margin-bottom:20px">
+    <div class="cm-inner">
+      <div class="cm-stars">★ ★ ★</div>
+      <div class="cm-name">CARL MILLER</div>
+      <div class="cm-dates">1938 — 2014 · In Memoriam</div>
+      <div class="cm-quote">"Your Constitution is an iron-clad contract, enforceable in a court of law. Learn it. Use it. It belongs to you."</div>
+      <div class="cm-bio">Vietnam War hero · Decorated veteran — shot down four times, shot twice, never stopped fighting.<br>
+        Spent 25 years teaching ordinary Americans how to use their own Constitution to defend their rights in court.<br>
+        The Sui Juris warrior. His teachings live in every demand letter sent, every motion filed,<br>
+        every citizen who stands up and says: <em style="color:rgba(201,168,76,.7)">"I know my rights."</em>
+      </div>
+      <div class="cm-tags">
+        <span class="cm-tag">Vietnam Veteran</span>
+        <span class="cm-tag">Constitutional Educator</span>
+        <span class="cm-tag">Sui Juris</span>
+        <span class="cm-tag">Patriot</span>
+        <span class="cm-tag">1938–2014</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#f0f8ff;border-radius:8px;padding:10px 16px;margin-bottom:16px;border-left:4px solid #003070;font-family:'DM Mono',monospace;font-size:10px;color:#003070;line-height:1.8">
+    💡 <strong>How to use:</strong> Click the tabs below. <strong>Case Law Library</strong> has every controlling case with full court opinions. <strong>Pro Se Guide</strong> walks through filing step by step. <strong>Error Report</strong> shows all 16 issues found in the Carl Miller review.
+  </div>
+
+  <!-- Sub-tabs -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px" id="cm2-tabs">
+    <button onclick="showCMTab2(0)" class="fb on" id="cm2-t0">📋 Pro Se Guide</button>
+    <button onclick="showCMTab2(1)" class="fb" id="cm2-t1">📚 Case Law Library</button>
+    <button onclick="showCMTab2(2)" class="fb" id="cm2-t2">📅 Rules & Deadlines</button>
+    <button onclick="showCMTab2(3)" class="fb" id="cm2-t3">⚠️ 16-Error Report</button>
+    <button onclick="showCMTab2(4)" class="fb" id="cm2-t4">📬 Delivery Methods</button>
+  </div>
+
+  <div id="cm2-panel-0">
+    <div id="cm2-content-0"></div>
+  </div>
+  <div id="cm2-panel-1" style="display:none">
+    <div id="cm2-content-1"></div>
+  </div>
+  <div id="cm2-panel-2" style="display:none">
+    <div id="cm2-content-2"></div>
+  </div>
+  <div id="cm2-panel-3" style="display:none">
+    <div id="cm2-content-3"></div>
+  </div>
+  <div id="cm2-panel-4" style="display:none">
+    <div id="cm2-content-4"></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE: LEGAL REFERENCE (CASE LAW)                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-caselaw">
+  <div class="pg-title">⚖️ Carl Miller — Legal Strategy & Case Law</div>
+  <div class="pg-subtitle">Pro Se Guide · Full Case Law Library · All Rules & Deadlines · Error Report · Delivery Methods</div>
+
+  <div style="background:#f0f8ff;border-radius:8px;padding:10px 16px;margin-bottom:16px;border-left:4px solid #003070;font-family:'DM Mono',monospace;font-size:10px;color:#003070;line-height:1.8">
+    💡 <strong>How to use:</strong> Click the tabs below: <strong>Case Law Library</strong> has every law that supports your case with full court opinions. <strong>Pro Se Guide</strong> walks you through what to do if you file yourself. <strong>Error Report</strong> shows the 16 issues found by Carl Miller review. Click <strong>"Read Full Court Opinion"</strong> on any case to expand the full judge's language.
+  </div>
+
+  <!-- Sub-tabs -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px" id="cl-tabs">
+    <button onclick="showCMTab(0)" class="fb on" id="cl-t0">📋 Pro Se Guide</button>
+    <button onclick="showCMTab(1)" class="fb" id="cl-t1">📚 Case Law Library</button>
+    <button onclick="showCMTab(2)" class="fb" id="cl-t2">📅 Rules & Deadlines</button>
+    <button onclick="showCMTab(3)" class="fb" id="cl-t3">⚠️ 16-Error Report</button>
+    <button onclick="showCMTab(4)" class="fb" id="cl-t4">📬 Delivery Methods</button>
+  </div>
+
+  <div id="cl-panel-0"><div id="cl-content-0"></div></div>
+  <div id="cl-panel-1" style="display:none"><div id="cl-content-1"></div></div>
+  <div id="cl-panel-2" style="display:none"><div id="cl-content-2"></div></div>
+  <div id="cl-panel-3" style="display:none"><div id="cl-content-3"></div></div>
+  <div id="cl-panel-4" style="display:none"><div id="cl-content-4"></div></div>
+</div>
+
+<!-- FOOTER -->
+<div class="foot">
+  <div class="foot-txt">Rivera v. Lee County Sheriff's Office · Case Portal · jriveralegal.github.io/rivera-case · March 7, 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  ALL JAVASCRIPT                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+// ── PAGE NAVIGATION ──────────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nt').forEach(b => b.classList.remove('on'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('on');
+  if (btn) btn.classList.add('on');
+  // Update hash without triggering scroll
+  history.replaceState(null, '', '#' + id);
+}
+
+// Hash routing on load ── FIX #2
+window.addEventListener('DOMContentLoaded', function() {
+  const hash = location.hash.replace('#','');
+  const validPages = ['overview','send','allfiles','evidence','attorney','carlmiller','caselaw'];
+  if (hash && validPages.includes(hash)) {
+    const navBtn = document.getElementById('nav-' + hash);
+    showPage(hash, navBtn);
+  }
+  initAll();
+});
+
+// ── COUNTDOWN CLOCKS ─────────────────────────────────────────────────────
+const DEADLINES = [
+  { id:'sol',   target: new Date('2028-01-28T00:00:00'), label:'SOL' },
+  { id:'purge', target: new Date('2026-04-28T00:00:00'), label:'Body Cam Purge' },
+  { id:'kw',    target: new Date('2026-03-18T00:00:00'), label:'Keywords' },
+  { id:'portal',target: new Date('2026-03-14T00:00:00'), label:'Portal' },
+];
+
+function fmtCountdown(ms) {
+  if (ms <= 0) return 'EXPIRED';
+  const d = Math.floor(ms/86400000);
+  const h = Math.floor((ms%86400000)/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  const s = Math.floor((ms%60000)/1000);
+  if (d > 30) return d + 'd ' + h + 'h';
+  if (d > 0)  return d + 'd ' + h + 'h ' + m + 'm';
+  return h + 'h ' + m + 'm ' + s + 's';
+}
+
+function tickClocks() {
+  const now = Date.now();
+  DEADLINES.forEach(dl => {
+    const el = document.getElementById(dl.id);
+    if (el) el.textContent = fmtCountdown(dl.target - now);
+  });
+}
+setInterval(tickClocks, 1000);
+tickClocks();
+
+// ── DASHBOARD DEADLINE CARDS ─────────────────────────────────────────────
+const DD_ITEMS = [
+  { lbl:'Body Cam Purge', date:'Apr 28, 2026', target:new Date('2026-04-28'), note:'8 cameras auto-delete — court order required NOW', cls:'alarm' },
+  { lbl:'LCSO Portal Expires', date:'Mar 14, 2026', target:new Date('2026-03-14'), note:'Demand new activation link immediately', cls:'superurg' },
+  { lbl:'Keywords Deadline', date:'Mar 18, 2026', target:new Date('2026-03-18'), note:'LCSO keyword list prerequisite — objection filed', cls:'urgent' },
+  { lbl:'§1983 SOL', date:'Jan 28, 2028', target:new Date('2028-01-28'), note:'Statute of limitations — 2 years remain', cls:'ok' },
+];
+
+function buildDashboard() {
+  const g = document.getElementById('ddg');
+  if (!g) return;
+  g.innerHTML = '';
+  const now = Date.now();
+  DD_ITEMS.forEach(item => {
+    const ms = item.target - now;
+    const d = document.createElement('div');
+    d.className = 'ddc ' + item.cls;
+    d.innerHTML = `<div class="dd-dlbl">${item.lbl}</div>
+      <div class="dd-ddate">${item.date}</div>
+      <div class="dd-dtimer">${fmtCountdown(ms)}</div>
+      <div class="dd-dnote">${item.note}</div>`;
+    g.appendChild(d);
+  });
+}
+
+// ── CALENDARS ────────────────────────────────────────────────────────────
+const MARCH_EVENTS = {
+  7:  ['Portal opens today'],
+  14: ['⚠️ LCSO Portal Expires'],
+  18: ['⚠️ Keywords Deadline'],
+};
+const APRIL_EVENTS = {
+  28: ['🚨 Body Cam Purge'],
+};
+
+function buildCal(gridId, year, month, events) {
+  const g = document.getElementById(gridId);
+  if (!g) return;
+  const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  g.innerHTML = '';
+
+  // Month header
+  const months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const hdr = document.createElement('div');
+  hdr.style.cssText = 'grid-column:1/-1;font-family:"DM Mono",monospace;font-size:11px;font-weight:700;color:#0a1628;padding:4px 0 8px;text-align:center;letter-spacing:.5px;text-transform:uppercase';
+  hdr.textContent = months[month] + ' ' + year;
+  g.appendChild(hdr);
+
+  days.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-hdr';
+    el.textContent = d;
+    g.appendChild(el);
+  });
+
+  const firstDay = new Date(year, month-1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const today = new Date();
+
+  for (let i=0; i<firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day other-month';
+    g.appendChild(el);
+  }
+  for (let day=1; day<=daysInMonth; day++) {
+    const el = document.createElement('div');
+    const isToday = today.getFullYear()===year && today.getMonth()===month-1 && today.getDate()===day;
+    const hasEv = events[day];
+    el.className = 'cal-day' + (isToday?' today':'') + (hasEv?(hasEv[0].includes('🚨')?' has-urgent':' has-event'):'');
+    el.innerHTML = `<div class="cal-dn">${day}</div>`;
+    if (hasEv) el.innerHTML += `<div class="cal-ev">${hasEv.join('<br>')}</div>`;
+    g.appendChild(el);
+  }
+}
+
+// ── ACTION PLAN DATA ──────────────────────────────────────────────────────
+const STEPS = [
+  { id:'S-01', status:'inperson', sent:false, title:'FILE AT COURTHOUSE — Emergency Motion (Jan 28 Body Cams)', agency:'Lee County Clerk of Courts', method:'inperson', deadline:'IMMEDIATE', desc:'§119.11 + §320.07 registration defense + dash cams + CAD. File in person at Lee County Courthouse.', docs:['Emergency Motion Body Cam DOCX','Emergency Motion Body Cam PDF'], gmail:''},
+  { id:'S-02', status:'inperson', sent:false, title:'FILE AT COURTHOUSE — Emergency Motion (Feb 8-9 Phone)', agency:'Lee County Clerk of Courts', method:'inperson', deadline:'IMMEDIATE', desc:'Chain of custody + Bell Tower + Riley v. California. File in person.', docs:[], gmail:''},
+  { id:'S-03', status:'inperson', sent:false, title:'FILE AT COURTHOUSE — Pre-Suit Petition (8 Businesses)', agency:'Lee County Clerk of Courts', method:'inperson', deadline:'ASAP', desc:'Rule 1.290 — Spios, BP, Circle K, Walgreens, Ross, Five Below, Benderson, Bell Tower.', docs:[], gmail:''},
+  { id:'S-04', status:'inperson', sent:false, title:'FILE AT COURTHOUSE — Pre-Suit Petition (Apple iCloud)', agency:'Lee County Clerk of Courts', method:'inperson', deadline:'ASAP', desc:'Access logs + deletion records + law enforcement requests.', docs:[], gmail:''},
+  { id:'S-05', status:'email', sent:false, title:'FDLE Combined — Resend with Monell Supplement', agency:'FDLE Civil Rights', method:'email', deadline:'TODAY', desc:'Resend FDLE complaint with Monell supplement attached.', docs:[], gmail:'https://mail.google.com/mail/?view=cm&to=civilliberty@fdle.state.fl.us&su=FOLLOW-UP%3A+Rivera+v.+LCSO+%E2%80%94+Monell+Supplement'},
+  { id:'S-06', status:'email', sent:false, title:'ACLU FL — Resend with Monell + Videos', agency:'ACLU Florida', method:'email', deadline:'TODAY', desc:'Resend ACLU submission with Monell supplement and Hannah video Drive links.', docs:[], gmail:'https://mail.google.com/mail/?view=cm&to=aclufl@aclufl.org&su=FOLLOW-UP%3A+Rivera+v.+LCSO+%E2%80%94+Monell+%2B+Video+Evidence'},
+  { id:'S-07', status:'email', sent:false, title:'DOJ — Monell Supplement', agency:'DOJ Civil Rights Division', method:'email', deadline:'THIS WEEK', desc:'Send Monell supplement to DOJ Civil Rights portal.', docs:[], gmail:''},
+  { id:'S-08', status:'email', sent:false, title:'FL AG — Monell Supplement', agency:'Florida Attorney General', method:'email', deadline:'THIS WEEK', desc:'FL AG civil rights division — Monell supplement.', docs:[], gmail:'https://mail.google.com/mail/?view=cm&to=OAG@myfloridalegal.com&su=Rivera+v.+LCSO+%E2%80%94+Monell+Supplement'},
+  { id:'S-09', status:'email', sent:false, title:'US Attorney MDFL — Monell Supplement', agency:'US Attorney MDFL', method:'email', deadline:'THIS WEEK', desc:'US Attorney Middle District FL — Monell pattern supplement.', docs:[], gmail:''},
+  { id:'S-10', status:'email', sent:false, title:'Apple Follow-Up — OVERDUE', agency:'Apple Legal', method:'email', deadline:'OVERDUE', desc:'Apple iCloud preservation hold follow-up — 2 years of footage missing from both accounts after Feb 8-9 incident.', docs:[], gmail:'https://mail.google.com/mail/?view=cm&to=legal@apple.com&su=FOLLOW-UP%3A+Preservation+Hold+%E2%80%94+Rivera+iCloud+Records'},
+  { id:'S-11', status:'email', sent:false, title:'Ben Crump — Attorney Outreach', agency:'Ben Crump Law', method:'email', deadline:'THIS WEEK', desc:'Video-first email. Share Hannah video Drive link. Body cam purge April 28.', docs:[], gmail:'https://mail.google.com/mail/?view=cm&to=info@bencrump.com&su=Civil+Rights+Case+%E2%80%94+Rivera+v.+LCSO+%E2%80%94+Video+Evidence+%2B+Body+Cam+Deadline'},
+  { id:'S-12', status:'cert', sent:false, title:'§768.28 Pre-Suit Notice — Certified Mail', agency:'LCSO / Lee County', method:'cert', deadline:'ASAP', desc:'Required pre-suit notice before state tort claim. Send certified mail to Sheriff + County.', docs:[], gmail:''},
+  // SENT items
+  { id:'S-C01', status:'sent', sent:true, title:'Records Requests — Jan 28 + Feb 8-9 Incidents', agency:'Lee County Clerk of Courts', method:'inperson', deadline:'Feb 25-26', desc:'Filed in person. Stamped receipts on file.', docs:[], gmail:'', sentDate:'Feb 25-26'},
+  { id:'S-C02', status:'sent', sent:true, title:'Litigation Hold — Served on LCSO', agency:'LCSO', method:'inperson', deadline:'Feb 25', desc:'Served in person. Stamped copy on file.', docs:[], gmail:'', sentDate:'Feb 25'},
+  { id:'S-C03', status:'sent', sent:true, title:'Internal Affairs Complaint', agency:'LCSO Internal Affairs', method:'inperson', deadline:'Feb 25', desc:'IA complaint filed in person.', docs:[], gmail:'', sentDate:'Feb 25'},
+  { id:'S-C04', status:'sent', sent:true, title:'FDLE Civil Rights Complaint', agency:'FDLE', method:'email', deadline:'Feb 26', desc:'Filed online + mailed certified. Escalation mailed March 4.', docs:[], gmail:'', sentDate:'Feb 26 + Mar 4'},
+  { id:'S-C05', status:'sent', sent:true, title:'DOJ Civil Rights Portal', agency:'DOJ', method:'email', deadline:'Feb 26', desc:'Submitted via DOJ portal.', docs:[], gmail:'', sentDate:'Feb 26'},
+  { id:'S-C06', status:'sent', sent:true, title:'ACLU Florida Portal', agency:'ACLU FL', method:'email', deadline:'Feb 26', desc:'Submitted via ACLU portal.', docs:[], gmail:'', sentDate:'Feb 26'},
+  { id:'S-C07', status:'sent', sent:true, title:'Apple iCloud Preservation Hold', agency:'Apple', method:'email', deadline:'Feb 26', desc:'Sent to both accounts: copyproxy88 + luvdontlivecold.', docs:[], gmail:'', sentDate:'Feb 26'},
+  { id:'S-C08', status:'sent', sent:true, title:'Business Surveillance Preservation — BP, Circle K, Walgreens', agency:'3 Businesses', method:'inperson', deadline:'Feb 25-26', desc:'Delivered in person + mailed certified. Videos recorded.', docs:[], gmail:'', sentDate:'Feb 25-26'},
+  { id:'S-C09', status:'sent', sent:true, title:'LR-1 through LR-6 — All LCSO Response Letters', agency:'LCSO', method:'cert', deadline:'Mar 4', desc:'All 6 response letters, fee challenge, non-response notices, clerk objection.', docs:[], gmail:'', sentDate:'Mar 4'},
+];
+
+// ── DOCUMENT DATA ─────────────────────────────────────────────────────────
+const DOCS = [
+  { id:'D-01', grp:'COURT FILINGS', title:'Emergency Motion — §119.11 Body Cam Preservation (Jan 28)', desc:'§119.11 + §320.07 registration defense + dash cams + CAD records', sendTo:'Lee County Clerk of Courts', deadline:'IMMEDIATE', status:'unsent', methods:['inperson'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-02', grp:'COURT FILINGS', title:'Emergency Motion — Phone Chain of Custody (Feb 8-9)', desc:'Chain of custody + Bell Tower + Riley v. California', sendTo:'Lee County Clerk of Courts', deadline:'IMMEDIATE', status:'unsent', methods:['inperson'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-03', grp:'COURT FILINGS', title:'Pre-Suit Petition — Business Footage (8 Locations)', desc:'Rule 1.290 — Spios, BP, Circle K, Walgreens, Ross, Five Below, Benderson, Bell Tower', sendTo:'Lee County Clerk of Courts', deadline:'ASAP', status:'unsent', methods:['inperson'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-04', grp:'COURT FILINGS', title:'Pre-Suit Petition — Apple iCloud Records', desc:'Access logs + deletion records + law enforcement requests', sendTo:'Lee County Clerk of Courts', deadline:'ASAP', status:'unsent', methods:['inperson'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-05', grp:'LCSO', title:'LR-1 — Initial Records Demand Letter', desc:'First demand for January 28 body cam footage + CAD records', sendTo:'LCSO Records', deadline:'SENT', status:'sent', methods:['cert'], sentDate:'Feb 25', proof:'Stamped receipt', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-06', grp:'LCSO', title:'LR-2 — Fee Objection Letter', desc:'Challenges $144.73/hr excessive fee rate vs. §119.07(4)(d) cap', sendTo:'LCSO Records', deadline:'SENT', status:'sent', methods:['cert'], sentDate:'Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-07', grp:'LCSO', title:'LR-3 — Keyword Objection', desc:'Objects to LCSO keyword prerequisite as unlawful delay tactic', sendTo:'LCSO Records', deadline:'SENT', status:'sent', methods:['cert'], sentDate:'Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-08', grp:'LCSO', title:'LR-4 — Body Cam Fee Waiver Request', desc:'Waiver of body cam footage fees — public interest / indigency', sendTo:'LCSO Records', deadline:'SENT', status:'sent', methods:['cert'], sentDate:'Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-09', grp:'LCSO', title:'LR-5 — Non-Response Notice', desc:'Documents failure to respond within 10-day window', sendTo:'LCSO Records', deadline:'SENT', status:'sent', methods:['cert'], sentDate:'Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-10', grp:'LCSO', title:'LR-6 — Portal Activation Demand', desc:'Demands portal activation renewal before Mar 14 expiration', sendTo:'LCSO Records', deadline:'SENT', status:'sent', methods:['cert'], sentDate:'Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-11', grp:'AGENCY', title:'FDLE Civil Rights Complaint', desc:'Primary complaint + March 4 escalation mailed', sendTo:'FDLE', deadline:'SENT', status:'sent', methods:['email','cert'], sentDate:'Feb 26 + Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-12', grp:'AGENCY', title:'DOJ Civil Rights Portal Submission', desc:'Submitted via DOJ portal', sendTo:'DOJ', deadline:'SENT', status:'sent', methods:['email'], sentDate:'Feb 26', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-13', grp:'AGENCY', title:'ACLU Florida Portal Submission', desc:'Submitted via ACLU portal', sendTo:'ACLU FL', deadline:'SENT', status:'sent', methods:['email'], sentDate:'Feb 26', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-14', grp:'AGENCY', title:'FDLE + DOJ + FL AG + US Attorney — Monell Supplement', desc:'Monell pattern supplement to all four agencies — NOT YET SENT', sendTo:'FDLE / DOJ / FL AG / US Attorney MDFL', deadline:'TODAY', status:'unsent', methods:['email'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD', gmail:'https://mail.google.com/mail/?view=cm&to=civilliberty@fdle.state.fl.us&su=Rivera+v.+LCSO+%E2%80%94+Monell+Supplement' },
+  { id:'D-15', grp:'PRESERVATION', title:'Litigation Hold — Served on LCSO', desc:'Delivered in person Feb 25. Stamped copy on file.', sendTo:'LCSO', deadline:'SENT', status:'sent', methods:['inperson'], sentDate:'Feb 25', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-16', grp:'PRESERVATION', title:'Apple iCloud Preservation Hold', desc:'Both accounts: copyproxy88 + luvdontlivecold', sendTo:'Apple Legal', deadline:'SENT', status:'sent', methods:['email'], sentDate:'Feb 26', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-17', grp:'ATTORNEY', title:'Attorney Packet v2', desc:'Complete case file for attorney review — §1988 fee shifting info included', sendTo:'Any Attorney', deadline:'ASAP', status:'unsent', methods:['email'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD', gmail:'https://mail.google.com/mail/?view=cm&su=Rivera+v.+LCSO+%E2%80%94+Civil+Rights+Case+%E2%80%94+Video+Evidence+%2B+Body+Cam+Deadline+April+28' },
+  { id:'D-18', grp:'ATTORNEY', title:'Draft §1983 Federal Complaint', desc:'Ready for attorney review and filing', sendTo:'Any Attorney', deadline:'ASAP', status:'unsent', methods:['email'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-19', grp:'PRESUIT', title:'§768.28 Pre-Suit Notice', desc:'Required notice before state tort claim against LCSO', sendTo:'LCSO / Lee County', deadline:'ASAP', status:'unsent', methods:['cert'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'D-20', grp:'EVIDENCE', title:'Witness Statement — Hannah (Sworn)', desc:'11 sections, signed under penalty of perjury. All incidents Jan 28 + Feb 8-9.', sendTo:'Attach to filings', deadline:'READY', status:'sent', methods:['email'], sentDate:'Mar 4', drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+];
+
+// ── BUILD ACTION PLAN TABLES ─────────────────────────────────────────────
+let stepsFilter = 'all';
+let stepsSearch = '';
+let docsFilter = 'all';
+
+function buildSteps() {
+  const container = document.getElementById('sg-steps');
+  if (!container) return;
+  const unsent = STEPS.filter(s=>!s.sent);
+  const sent   = STEPS.filter(s=>s.sent);
+  document.getElementById('sg-unsent-count').textContent = unsent.length;
+  document.getElementById('sg-sent-count').textContent   = sent.length;
+  document.getElementById('sg-total-count').textContent  = STEPS.length;
+  document.getElementById('sc-doc-count').textContent    = DOCS.length;
+
+  // Update home page counter
+  const cnt = document.getElementById('cnt-send');
+  if (cnt) cnt.textContent = unsent.length + ' items still need to go out';
+
+  container.innerHTML = '';
+  STEPS.forEach(step => {
+    const matchFilter = stepsFilter==='all'
+      || (stepsFilter==='unsent' && !step.sent)
+      || (stepsFilter==='sent'   && step.sent)
+      || (stepsFilter==='email'  && step.method==='email')
+      || (stepsFilter==='cert'   && step.method==='cert')
+      || (stepsFilter==='inperson' && step.method==='inperson');
+    const matchSearch = !stepsSearch || step.title.toLowerCase().includes(stepsSearch) || step.agency.toLowerCase().includes(stepsSearch) || step.desc.toLowerCase().includes(stepsSearch);
+    if (!matchFilter || !matchSearch) return;
+
+    const cls = step.sent ? 's-ml' : (step.method==='inperson'?'s-urg':(step.method==='email'?'s-em':'s-ml'));
+    const statusPill = step.sent
+      ? '<span class="pill p-sent">✅ SENT</span>'
+      : (step.deadline==='IMMEDIATE'||step.deadline==='OVERDUE' ? '<span class="pill p-alarm">🚨 '+step.deadline+'</span>' : '<span class="pill p-now">🔴 SEND NOW</span>');
+    const gmailBtn = step.gmail ? `<a href="${step.gmail}" target="_blank" class="ab gm">📧 Gmail</a>` : '';
+    const driveBtn = `<a href="https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD" target="_blank" class="ab ms">📁 Drive</a>`;
+    const sentInfo = step.sent ? `<div class="dreply">✅ Sent ${step.sentDate||''}</div>` : '';
+
+    const div = document.createElement('div');
+    div.className = 'sg-step ' + cls;
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.3px">${step.id} · ${step.agency}</div>
+          <div class="sg-stitle">${step.title}</div>
+          <div class="sg-body">${step.desc}</div>
+          ${sentInfo}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;min-width:120px">
+          ${statusPill}
+          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-top:4px">
+            ${gmailBtn}${driveBtn}
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function filtSC(q) {
+  stepsSearch = q.toLowerCase();
+  buildSteps();
+}
+
+function filtSCTab(tab, btn) {
+  stepsFilter = tab;
+  document.querySelectorAll('#page-send .fb').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  buildSteps();
+}
+
+// ── BUILD SEND TABLE ────────────────────────────────────────────────────
+function buildSendTable() {
+  const tbody = document.getElementById('tb-send');
+  const tbconf = document.getElementById('tb-confirmed');
+  if (!tbody || !tbconf) return;
+
+  const unsent = DOCS.filter(d=>d.status==='unsent');
+  const sent   = DOCS.filter(d=>d.status==='sent');
+
+  tbody.innerHTML = unsent.map(d => `
+    <tr class="dr send-row">
+      <td><div class="cgrp">${d.grp}</div><div class="cid">${d.id}</div></td>
+      <td><div class="dtitle">${d.title}</div><div class="ddesc">${d.desc}</div></td>
+      <td style="font-size:12px">${d.sendTo}</td>
+      <td class="dc"><div class="ds">${d.deadline}</div></td>
+      <td><span class="pill p-now">🔴 UNSENT</span></td>
+      <td class="acts">
+        ${d.gmail?`<a href="${d.gmail}" target="_blank" class="ab gm">📧 Gmail</a>`:''}
+        <a href="${d.drive}" target="_blank" class="ab ms">📁 Drive</a>
+      </td>
+    </tr>`).join('');
+
+  tbconf.innerHTML = sent.map(d => `
+    <tr class="dr sent-row">
+      <td><div class="cgrp">${d.grp}</div><div class="cid">${d.id}</div></td>
+      <td><div class="dtitle">${d.title}</div><div class="ddesc">${d.desc}</div></td>
+      <td style="font-size:12px">${d.sendTo}</td>
+      <td class="dc"><div class="ds">${d.sentDate||'—'}</div></td>
+      <td><span class="pill p-sent">✅ SENT</span></td>
+      <td class="acts">
+        <a href="${d.drive}" target="_blank" class="ab ms">📁 Drive</a>
+      </td>
+    </tr>`).join('');
+}
+
+function filtSendDocs(tab, btn) {
+  const rows = document.querySelectorAll('#tb-send tr, #tb-confirmed tr');
+  rows.forEach(r => {
+    const isSent = r.classList.contains('sent-row');
+    const show = tab==='all'
+      || (tab==='unsent' && r.classList.contains('send-row'))
+      || (tab==='sent'   && isSent)
+      || (tab==='email'  && r.querySelector('.ab.gm'))
+      || (tab==='cert'   && !r.querySelector('.ab.gm') && !isSent)
+      || (tab==='print');
+    r.classList.toggle('hidden', !show);
+  });
+  document.querySelectorAll('#page-send .ctrl .fb').forEach(b=>b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+}
+
+// ── ALL FILES: PDF LIBRARY ───────────────────────────────────────────────
+const PDFS = [
+  { id:'P-01', cat:'atty', status:'unsent', title:'Attorney Packet v2 — Complete Case File', desc:'All claims, evidence, violations, case law, draft §1983 complaint, Monell analysis. Send to any attorney.', recipients:['Any Civil Rights Attorney'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD', gmail:'https://mail.google.com/mail/?view=cm&su=Rivera+v.+LCSO+%E2%80%94+Civil+Rights+Case+%E2%80%94+Video+Evidence+%2B+Body+Cam+Deadline+April+28' },
+  { id:'P-02', cat:'atty', status:'unsent', title:'Draft §1983 Federal Complaint', desc:'Federal court complaint — §1983, Monell, excessive force, evidence deletion, Baker Act coercion. Ready for attorney review.', recipients:['Any Civil Rights Attorney'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'P-03', cat:'lcso', status:'unsent', title:'Emergency Motion — §119.11 Body Cam Preservation', desc:'§119.11 + §320.07 registration defense. File at courthouse immediately.', recipients:['Lee County Clerk of Courts'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'P-04', cat:'lcso', status:'sent', title:'LR-1 through LR-6 — All LCSO Response Letters', desc:'Six detailed response letters. Fee challenge, keyword objection, portal demand, non-response notice.', recipients:['LCSO Records Custodian'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'P-05', cat:'fdle', status:'sent', title:'FDLE Civil Rights Complaint + Escalation', desc:'Primary complaint filed Feb 26. Escalation mailed March 4.', recipients:['FDLE Civil Rights'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'P-06', cat:'monell', status:'unsent', title:'Monell Supplement — All Agencies', desc:'Monell pattern documentation for FDLE, DOJ, FL AG, US Attorney MDFL. NOT YET SENT.', recipients:['FDLE','DOJ','FL AG','US Attorney MDFL'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD', gmail:'https://mail.google.com/mail/?view=cm&su=Rivera+v.+LCSO+%E2%80%94+Monell+Supplement' },
+  { id:'P-07', cat:'apple', status:'sent', title:'Apple iCloud Preservation Hold', desc:'Both accounts: copyproxy88 + luvdontlivecold. Sent Feb 26.', recipients:['Apple Legal'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+  { id:'P-08', cat:'atty', status:'unsent', title:'Master Case File PDF — All Documents', desc:'Complete master PDF — all letters, submissions, research appendix, verbatim statutes, case law.', recipients:['Any Attorney / Court'], drive:'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD' },
+];
+
+let pdfFilter = 'all';
+let pdfSearch = '';
+
+function buildPDFLib() {
+  const container = document.getElementById('pdf-lib');
+  if (!container) return;
+  container.innerHTML = '';
+  PDFS.forEach(p => {
+    const matchCat = pdfFilter==='all' || p.cat===pdfFilter || (pdfFilter==='unsent'&&p.status==='unsent') || (pdfFilter==='sent'&&p.status==='sent');
+    const matchSearch = !pdfSearch || p.title.toLowerCase().includes(pdfSearch) || p.desc.toLowerCase().includes(pdfSearch);
+    if (!matchCat || !matchSearch) return;
+    const card = document.createElement('div');
+    card.style.cssText = 'background:white;border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:10px;border-left:4px solid '+(p.status==='unsent'?'#c94c00':'#005a20');
+    const gmailBtn = p.gmail ? `<a href="${p.gmail}" target="_blank" class="ab gm" style="display:inline-flex;align-items:center;gap:4px">📧 Gmail</a>` : '';
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">${p.id} · ${p.cat.toUpperCase()}</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px">${p.title}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#555;line-height:1.7">${p.desc}</div>
+          <div style="margin-top:6px">${p.recipients.map(r=>`<span class="badge em">${r}</span>`).join('')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <span class="pill ${p.status==='unsent'?'p-now':'p-sent'}">${p.status==='unsent'?'🔴 SEND':'✅ SENT'}</span>
+          <div style="display:flex;gap:4px;margin-top:4px">
+            ${gmailBtn}
+            <a href="${p.drive}" target="_blank" class="ab ms">📁 Drive</a>
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function filtPdfs(cat, btn) {
+  pdfFilter = cat;
+  document.querySelectorAll('#af-panel-pdfs .fb').forEach(b=>b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  else { const fbAll = document.getElementById('fb-all'); if(fbAll) fbAll.classList.add('on'); }
+  buildPDFLib();
+}
+
+function filtPdfSearch(q) {
+  pdfSearch = q.toLowerCase();
+  buildPDFLib();
+}
+
+// ── ALL FILES: DOCS TABLE ────────────────────────────────────────────────
+function buildDocsTable() {
+  const tb2 = document.getElementById('tb-send2');
+  const tb  = document.getElementById('tb-docs');
+  if (!tb) return;
+  if (tb2) tb2.innerHTML = '';
+  tb.innerHTML = DOCS.map(d => `
+    <tr class="dr ${d.status==='unsent'?'send-row':'sent-row'}">
+      <td><div class="cgrp">${d.grp}</div><div class="cid">${d.id}</div></td>
+      <td><div class="dtitle">${d.title}</div><div class="ddesc">${d.desc}</div></td>
+      <td style="font-size:12px">${d.sendTo}</td>
+      <td class="dc"><div class="ds">${d.deadline}</div></td>
+      <td><span class="pill ${d.status==='unsent'?'p-now':'p-sent'}">${d.status==='unsent'?'🔴 UNSENT':'✅ SENT'}</span></td>
+      <td class="acts">
+        ${d.gmail?`<a href="${d.gmail}" target="_blank" class="ab gm">📧 Gmail</a>`:''}
+        <a href="${d.drive||'https://drive.google.com/drive/folders/1eenhhp3UWUhbPXm_J7lt5av961u2kWZD'}" target="_blank" class="ab ms">📁 Drive</a>
+      </td>
+    </tr>`).join('');
+}
+
+function filtDocs(q) {
+  const rows = document.querySelectorAll('#tb-docs tr, #tb-send2 tr');
+  rows.forEach(r => {
+    const text = r.textContent.toLowerCase();
+    r.classList.toggle('hidden', !text.includes(q.toLowerCase()));
+  });
+}
+
+function filtDocsTab(tab, btn) {
+  const rows = document.querySelectorAll('#tb-docs tr, #tb-send2 tr');
+  rows.forEach(r => {
+    const show = tab==='all'
+      || (tab==='unsent' && r.classList.contains('send-row'))
+      || (tab==='sent'   && r.classList.contains('sent-row'))
+      || tab==='em' || tab==='cm';
+    r.classList.toggle('hidden', !show);
+  });
+  document.querySelectorAll('#af-panel-docs .fb').forEach(b=>b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+}
+
+function showAFTab(tab, btn) {
+  document.getElementById('af-panel-pdfs').style.display = tab==='pdfs'?'':'none';
+  document.getElementById('af-panel-docs').style.display = tab==='docs'?'':'none';
+  document.getElementById('af-tab-pdfs').style.background = tab==='pdfs'?'#0a1628':'#ddd';
+  document.getElementById('af-tab-pdfs').style.color      = tab==='pdfs'?'white':'#333';
+  document.getElementById('af-tab-docs').style.background = tab==='docs'?'#0a1628':'#ddd';
+  document.getElementById('af-tab-docs').style.color      = tab==='docs'?'white':'#333';
+}
+
+// ── EVIDENCE CARDS ───────────────────────────────────────────────────────
+const EV_ITEMS = [
+  { id:'EV-01', title:"Hannah's Video 1 — Rivera on Ground", status:'safe', hdr:'safe', desc:"4-officer takedown of non-resistant individual. Rivera on ground, all 4 LCSO deputies visible. Hannah's phone — safe.", tags:['Jan 28 2026','Hannah Phone','4-Officer Takedown','§1983'], legal:'Graham v. Connor — all 3 factors favor Rivera. No QI.' },
+  { id:'EV-02', title:"Hannah's Video 2 — Initial 4-Minute Contact", status:'safe', hdr:'safe', desc:"Initial officer approach, escalation from citation to takedown. First 4 minutes of the stop.", tags:['Jan 28 2026','Hannah Phone','Extension of Stop'], legal:'Rodriguez v. US — no basis to extend stop beyond citation.' },
+  { id:'EV-03', title:"Rivera's Phone Recording — DELETED BY LCSO", status:'gone', hdr:'deleted', desc:"Recorded full interaction Jan 28. Officer deleted directly from Rivera's phone during stop. First Amendment violation.", tags:['Deleted by LCSO','§839.13','First Amendment'], legal:'Smith v. City of Cumming (11th Cir.) — right clearly established. No QI.' },
+  { id:'EV-04', title:"iCloud Library — 2 Years MISSING", status:'gone', hdr:'deleted', desc:"2 years of video footage gone from iCloud after Feb 8-9 phone incident. Apple preservation hold active.", tags:['Feb 8-9 2026','Apple iCloud','Missing Evidence'], legal:'Attorney subpoena required. DO NOT reset phone.' },
+  { id:'EV-05', title:"8 LCSO Body Cameras — PURGE APR 28", status:'urgent', hdr:'urgent', desc:"8 body cameras on auto-purge April 28, 2026. Court preservation order required immediately.", tags:['April 28 2026','Body Cam','URGENT'], legal:'§119.11 emergency motion filed (pro se). Must be filed before April 28.' },
+  { id:'EV-06', title:'Vehicle Damage Photos', status:'secure', hdr:'secure', desc:'Cup holder/console damage + door panel razor marks from warrantless destructive search.', tags:['Vehicle Damage','Warrantless Search','Collins v. Virginia'], legal:'Collins v. Virginia (2018) — warrantless destructive search = Fourth Amendment violation.' },
+  { id:'EV-07', title:'Stamped LCSO Records Receipts', status:'safe', hdr:'safe', desc:'Both records requests stamped by LCSO in person Feb 25 + Feb 26.', tags:['Feb 25-26','Records Request','Stamped'], legal:'Proof of timely filing. Chapter 119 clock started.' },
+  { id:'EV-08', title:'LCSO 3-Part Obstruction Email', status:'safe', hdr:'safe', desc:'Mar 1 email documenting all 3 obstruction methods: merged request, excessive fees ($144.73/hr), expired portal activation.', tags:['Mar 1 2026','Chapter 119','Obstruction','Monell'], legal:'Three simultaneous methods = deliberate policy, not error.' },
+  { id:'EV-09', title:'Witness Statement — Hannah (Sworn)', status:'safe', hdr:'safe', desc:'11 sections, signed under penalty of perjury. Covers Jan 28 stop and Feb 8-9 phone incident.', tags:['Sworn','Penalty of Perjury','Hannah','11 Sections'], legal:'Admissible as sworn declaration. Covers all incidents.' },
+  { id:'EV-10', title:'Citation 26-051270 + Docket Discrepancy', status:'safe', hdr:'safe', desc:'Citation issued by Rogers conflicts with court docket 26-TR-005517. Discrepancy documented.', tags:['Citation','Docket Discrepancy','§320.07'], legal:'Registration citation only — §320.07 provides no basis for takedown or extended stop.' },
+];
+
+function buildEvCards() {
+  const c = document.getElementById('ev-cards');
+  if (!c) return;
+  c.innerHTML = EV_ITEMS.map(ev => `
+    <div class="ev-card">
+      <div class="ev-hdr ${ev.hdr}">
+        <div>
+          <div class="ev-title">${ev.title}</div>
+          <div class="ev-id">${ev.id}</div>
+        </div>
+        <span class="ev-status ${ev.status==='gone'?'gone':ev.status==='urgent'?'urgent':ev.status==='secure'?'secure':ev.status==='pending'?'pending':'safe'}">${ev.status==='gone'?'🚨 DELETED':ev.status==='urgent'?'⚠️ AT RISK':ev.status==='secure'?'🔒 SECURED':'✅ SAFE'}</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-detail">${ev.desc}</div>
+        <div class="ev-detail" style="color:#003070"><strong>Legal:</strong> ${ev.legal}</div>
+        <div class="ev-meta">${ev.tags.map(t=>`<span class="ev-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── CARL MILLER TABS ────────────────────────────────────────────────────
+const CM_TABS_CONTENT = [
+  // 0: Pro Se Guide
+  `<div style="background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+    <h3 style="font-family:'Playfair Display',serif;color:#0a1628;margin-bottom:16px">📋 Pro Se Court Filing Guide</h3>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:#333;line-height:2.2">
+      <p style="margin-bottom:12px"><strong>Step 1 — Gather your documents.</strong> Every motion must have: the motion itself, a memorandum of law, and a proposed order. Make 3 copies of everything — one for the court, one for each party, one for yourself.</p>
+      <p style="margin-bottom:12px"><strong>Step 2 — Caption format.</strong> Every document must be captioned: JOSEPH ANTHONY RIVERA, Plaintiff, v. LEE COUNTY SHERIFF'S OFFICE, Defendant. Case number goes top right if you have one.</p>
+      <p style="margin-bottom:12px"><strong>Step 3 — File in person at Lee County Courthouse.</strong> 1700 Monroe St, Fort Myers FL 33901. Clerk's office opens 8:30 AM. Bring cash or card for filing fees. Ask for a conformed copy (stamped).</p>
+      <p style="margin-bottom:12px"><strong>Step 4 — Serve all parties.</strong> After filing, you must serve a copy on LCSO's legal counsel by certified mail. File a Certificate of Service with the court.</p>
+      <p style="margin-bottom:12px"><strong>Step 5 — Keep everything.</strong> Every stamped receipt, every certified mail tracking number, every auto-response email. These are your proof of filing.</p>
+      <p style="margin-bottom:12px"><strong>Step 6 — Emergency motions get priority.</strong> Mark the cover page: EMERGENCY MOTION — PURGE DATE APRIL 28, 2026. Ask the clerk to mark it urgent.</p>
+    </div>
+  </div>`,
+  // 1: Case Law Library
+  `<div style="background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+    <h3 style="font-family:'Playfair Display',serif;color:#0a1628;margin-bottom:16px">📚 Case Law Library — Controlling Authorities</h3>
+    ${[
+      {name:'Smith v. City of Cumming', cite:'11th Cir. 2000', rule:'Right to record police is clearly established in the 11th Circuit. No qualified immunity for officers who interfere with or delete recordings.', claim:'First Amendment'},
+      {name:'Graham v. Connor', cite:'490 U.S. 386 (1989)', rule:'Excessive force evaluated on: (1) severity of crime, (2) immediate threat, (3) active resistance. All 3 favor Rivera on a registration citation.', claim:'Excessive Force'},
+      {name:'Rodriguez v. United States', cite:'575 U.S. 348 (2015)', rule:'Unanimous SCOTUS: police may not extend a traffic stop beyond its purpose without independent reasonable suspicion. No such suspicion existed here.', claim:'Fourth Amendment'},
+      {name:'Collins v. Virginia', cite:'584 U.S. 586 (2018)', rule:'Automobile exception does not authorize warrantless entry into the home/curtilage. Destructive vehicle search without warrant = Fourth Amendment violation.', claim:'Fourth Amendment'},
+      {name:'Monell v. NYC Dept of Social Services', cite:'436 U.S. 658 (1978)', rule:'Municipalities are liable under §1983 when a custom or policy causes constitutional violations. Three documented obstruction methods = established custom.', claim:'Monell'},
+      {name:'City of Canton v. Harris', cite:'489 U.S. 378 (1989)', rule:'Failure to train/discipline can show deliberate indifference. No discipline for recording deletion = LCSO ratification of the custom.', claim:'Monell'},
+      {name:'Pembaur v. City of Cincinnati', cite:'475 U.S. 469 (1986)', rule:'Single decision by a final policymaker (the Sheriff) is sufficient for Monell liability.', claim:'Monell'},
+      {name:'Zinermon v. Burch', cite:'494 U.S. 113 (1990)', rule:'Involuntary psychiatric commitment requires valid statutory predicate. Threatening Baker Act without meeting criteria = Due Process violation.', claim:'Due Process'},
+      {name:'Toole v. City of Atlanta', cite:'11th Cir. 2019', rule:'QI denied for arresting person filming police. Recording deletion is far more severe than arrest for recording.', claim:'First Amendment'},
+      {name:'Shuttlesworth v. City of Birmingham', cite:'394 U.S. 147 (1969)', rule:'Government cannot condition constitutional rights on unconstitutional demands. $144.73/hr records fee = unconstitutional condition on access.', claim:'Chapter 119'},
+    ].map(c=>`
+      <div style="border:1px solid #e0ddd8;border-radius:8px;padding:14px;margin-bottom:10px;border-left:4px solid #003070">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+          <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#0a1628">${c.name}</div>
+          <div style="display:flex;gap:6px"><span class="badge em">${c.cite}</span><span class="badge ip">${c.claim}</span></div>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:1.8">${c.rule}</div>
+      </div>`).join('')}
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#888;margin-top:12px;padding:10px;background:#f9f7f2;border-radius:6px">35 total authorities mapped to Rivera's 5 claims — see Carl Miller Integration Map document in Drive.</div>
+  </div>`,
+  // 2: Rules & Deadlines
+  `<div style="background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+    <h3 style="font-family:'Playfair Display',serif;color:#0a1628;margin-bottom:16px">📅 Rules & Key Deadlines</h3>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:#333;line-height:2.2">
+      <div style="background:#fff0f0;border-radius:6px;padding:12px;margin-bottom:12px;border-left:4px solid #8b0000">
+        <strong style="color:#8b0000">🚨 APRIL 28, 2026 — Body Cam Purge (52 days)</strong><br>
+        8 LCSO body cameras auto-purge. Emergency preservation motion MUST be filed before this date. Failure = permanent loss of primary evidence.
+      </div>
+      <div style="background:#fff8ee;border-radius:6px;padding:12px;margin-bottom:12px;border-left:4px solid #c94c00">
+        <strong style="color:#c94c00">⚠️ MARCH 14, 2026 — LCSO Portal Expiration</strong><br>
+        LCSO's portal activation link expires. Demand new link in writing immediately. Document any refusal.
+      </div>
+      <div style="background:#fff8ee;border-radius:6px;padding:12px;margin-bottom:12px;border-left:4px solid #c94c00">
+        <strong style="color:#c94c00">⚠️ MARCH 18, 2026 — Keywords Deadline</strong><br>
+        LCSO keyword list prerequisite. Rivera objected but LCSO considers this a prerequisite. Document your objection.
+      </div>
+      <div style="background:#f0fff4;border-radius:6px;padding:12px;margin-bottom:12px;border-left:4px solid #005a20">
+        <strong style="color:#005a20">✅ JANUARY 28, 2028 — §1983 SOL</strong><br>
+        4-year argument also available under §95.11(3)(p) extending to January 28, 2030. 2+ years remaining.
+      </div>
+      <div style="background:#f0f8ff;border-radius:6px;padding:12px;border-left:4px solid #003070">
+        <strong style="color:#003070">Chapter 119 Rules</strong><br>
+        Agency must respond within 10 business days. Fee cap: actual cost of duplication (§119.07(4)(d)). $144.73/hr exceeds this cap. Portal activation = no basis in statute.
+      </div>
+    </div>
+  </div>`,
+  // 3: 16-Error Report
+  `<div style="background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+    <h3 style="font-family:'Playfair Display',serif;color:#0a1628;margin-bottom:16px">⚠️ 16-Error Report — LCSO Violations</h3>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#333;line-height:2.2">
+      ${[
+        '4-officer response to a registration citation (non-criminal)',
+        'Ground takedown of non-resistant individual — no documented justification',
+        'No use-of-force report filed — itself a policy violation',
+        'Baker Act threat without meeting statutory criteria',
+        "Deletion of Rivera's phone recording during the stop",
+        'Failure to document the recording deletion',
+        'No discipline for the recording deletion',
+        'Extended stop beyond citation issuance without reasonable suspicion',
+        'Warrantless destructive vehicle search',
+        'Physical damage to vehicle interior not documented',
+        'Three simultaneous Chapter 119 obstruction methods (merged request, excessive fees, expired portal)',
+        'Fee rate of $144.73/hr exceeds §119.07(4)(d) statutory cap',
+        'Portal activation requirement has no statutory basis',
+        "Feb 8-9 phone taken with no chain of custody documentation",
+        '2 years of iCloud footage missing after Feb 8-9 phone incident',
+        'Body cam purge scheduled despite active litigation hold',
+      ].map((err,i)=>`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #eee"><div style="font-weight:700;color:#8b0000;min-width:24px">${i+1}.</div><div>${err}</div></div>`).join('')}
+    </div>
+  </div>`,
+  // 4: Delivery Methods
+  `<div style="background:white;border-radius:10px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+    <h3 style="font-family:'Playfair Display',serif;color:#0a1628;margin-bottom:16px">📬 Delivery Methods</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-family:'DM Mono',monospace;font-size:10px">
+      <div style="background:#f8f8ff;border-radius:8px;padding:14px;border-left:4px solid #003070">
+        <div style="font-weight:700;color:#003070;margin-bottom:6px">📧 Email</div>
+        <div style="color:#333;line-height:1.9">Use for agency submissions, attorney outreach. Always BCC yourself. Screenshot the sent email. Keep auto-response receipts. Preferred for FDLE, DOJ, ACLU, attorneys.</div>
+      </div>
+      <div style="background:#fff8f0;border-radius:8px;padding:14px;border-left:4px solid #c94c00">
+        <div style="font-weight:700;color:#c94c00;margin-bottom:6px">📬 Certified Mail (USPS)</div>
+        <div style="color:#333;line-height:1.9">Required for §768.28 notice, LCSO letters, Clerk of Courts. Keep green card + tracking number. Take photo of envelope before mailing. Best proof of delivery.</div>
+      </div>
+      <div style="background:#fff8f8;border-radius:8px;padding:14px;border-left:4px solid #8b0000">
+        <div style="font-weight:700;color:#8b0000;margin-bottom:6px">🏛️ In Person at Courthouse</div>
+        <div style="color:#333;line-height:1.9">Required for court filings. Bring 3 copies. Ask for conformed (stamped) copy. Lee County Courthouse: 1700 Monroe St, Fort Myers FL 33901. Hours: M-F 8:30 AM.</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:8px;padding:14px;border-left:4px solid #005a20">
+        <div style="font-weight:700;color:#005a20;margin-bottom:6px">✅ Best Practice — All Methods</div>
+        <div style="color:#333;line-height:1.9">Always document the delivery. Certified mail = green card + tracking. In person = stamped copy. Email = screenshot + auto-response. Everything goes in your Drive folder.</div>
+      </div>
+    </div>
+  </div>`,
+];
+
+function showCMTab(idx) {
+  for (let i=0;i<5;i++) {
+    const panel = document.getElementById('cl-panel-'+i);
+    const btn   = document.getElementById('cl-t'+i);
+    if (panel) panel.style.display = i===idx ? '' : 'none';
+    if (btn) btn.classList.toggle('on', i===idx);
+    if (i===idx) {
+      const content = document.getElementById('cl-content-'+i);
+      if (content && !content.innerHTML) content.innerHTML = CM_TABS_CONTENT[i];
+    }
+  }
+}
+
+function showCMTab2(idx) {
+  for (let i=0;i<5;i++) {
+    const panel = document.getElementById('cm2-panel-'+i);
+    const btn   = document.getElementById('cm2-t'+i);
+    if (panel) panel.style.display = i===idx ? '' : 'none';
+    if (btn) btn.classList.toggle('on', i===idx);
+    if (i===idx) {
+      const content = document.getElementById('cm2-content-'+i);
+      if (content && !content.innerHTML) content.innerHTML = CM_TABS_CONTENT[i];
+    }
+  }
+}
+
+// ── INIT ALL ──────────────────────────────────────────────────────────────
+function initAll() {
+  buildDashboard();
+  buildCal('cal-grid', 2026, 3, MARCH_EVENTS);
+  buildCal('cal-grid-apr', 2026, 4, APRIL_EVENTS);
+  buildSteps();
+  buildSendTable();
+  buildPDFLib();
+  buildDocsTable();
+  buildEvCards();
+  // Init first CM tab
+  showCMTab(0);
+  showCMTab2(0);
+}
+</script>
+
+</body>
+</html>
